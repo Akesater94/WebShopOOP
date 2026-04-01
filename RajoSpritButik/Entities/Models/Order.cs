@@ -12,5 +12,6 @@ namespace Entities.Models
         public int UserId { get; set; }
         public User User { get; set; }
         public ShippingAlternative ShippingAlternative { get; set; }
+        public ICollection<OrderRow> OrderRows { get; set; } = [];
     }
 }

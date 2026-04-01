@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace EFCore
+namespace EFCore.Configuration
 {
     internal class AddressConfiguration : IEntityTypeConfiguration<Address>
     {
@@ -16,7 +16,7 @@ namespace EFCore
             builder.Property(a => a.Street).IsRequired().HasMaxLength(256);
             builder.Property(a => a.StreetNumber).IsRequired().HasMaxLength(256);
             builder.Property(a => a.ZipCode).IsRequired().HasMaxLength(16);
-            builder.HasOne(a => a.Country).WithMany(c => c.Addresses).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(a => a.Country).WithMany(c => c.Addresses).IsRequired(false).HasForeignKey(a => a.CountryId).OnDelete(DeleteBehavior.Restrict);
 
         }
     }

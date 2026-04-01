@@ -14,5 +14,6 @@ namespace Entities.Models
         public Role Role { get; set; }
         public Address Address { get; set; }
         public DateTime CreatedAt { get; set; }
+        public ICollection<Order> Orders { get; set; } = [];
     }
 }

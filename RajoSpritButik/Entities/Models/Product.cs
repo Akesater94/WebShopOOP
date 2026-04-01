@@ -13,6 +13,7 @@ namespace Entities.Models
         public int ManufacturerId { get; set; }
         public Manufacturer Manufacturer { get; set; }
         public Category Category { get; set; }
+        public ICollection<OrderRow> OrderRows { get; set; } = [];
         
     }
 }
