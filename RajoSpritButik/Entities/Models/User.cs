@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Principal;
-using System.Text;
-
-namespace Entities.Models
+﻿namespace Entities.Models
 {
     public class User
     {
@@ -15,5 +10,6 @@ namespace Entities.Models
         public Address Address { get; set; }
         public DateTime CreatedAt { get; set; }
         public ICollection<Order> Orders { get; set; } = [];
+        public ICollection<ContactInfo> ContactInfos { get; set; } = [];
     }
 }

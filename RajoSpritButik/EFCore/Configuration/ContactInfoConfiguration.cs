@@ -12,6 +12,6 @@ internal class ContactInfoConfiguration : IEntityTypeConfiguration<ContactInfo>
 
         builder.Property(c => c.Value).IsRequired().HasMaxLength(256);
         builder.HasOne(c => c.ContactType).WithMany(c => c.ContactInfos).IsRequired().HasForeignKey(c => c.ContactTypeId).OnDelete(DeleteBehavior.Restrict);
-        builder.HasOne(c => c.UserContactInfos);
+        builder.HasOne(c => c.User).WithMany(u => u.ContactInfos).HasForeignKey(c => c.UserId);
     }
 }

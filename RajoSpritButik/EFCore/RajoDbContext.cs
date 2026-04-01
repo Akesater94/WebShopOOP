@@ -1,8 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Entities.Models;
+﻿using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EFCore
 {
@@ -22,7 +19,6 @@ namespace EFCore
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<ShoppingCartRow> ShoppingCartRows { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<UserContactInfo> UserContactInfos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
