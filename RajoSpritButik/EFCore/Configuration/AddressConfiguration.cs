@@ -16,6 +16,7 @@ namespace EFCore.Configuration
             builder.Property(a => a.Street).IsRequired().HasMaxLength(256);
             builder.Property(a => a.StreetNumber).IsRequired().HasMaxLength(256);
             builder.Property(a => a.ZipCode).IsRequired().HasMaxLength(16);
+
             builder.HasOne(a => a.Country).WithMany(c => c.Addresses).IsRequired(false).HasForeignKey(a => a.CountryId).OnDelete(DeleteBehavior.Restrict);
 
         }

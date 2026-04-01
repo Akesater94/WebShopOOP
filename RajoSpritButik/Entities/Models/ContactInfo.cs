@@ -10,5 +10,7 @@ namespace Entities.Models
         public string Value { get; set; }
         public int ContactTypeId { get; set; }
         public ContactType ContactType { get; set; }
+
+        public UserContactInfo UserContactInfos { get; set; } 
     }
 }

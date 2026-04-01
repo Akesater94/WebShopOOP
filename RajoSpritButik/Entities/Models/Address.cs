@@ -13,5 +13,6 @@ namespace Entities.Models
         public string ZipCode { get; set; }
         public int CountryId { get; set; }
         public Country Country { get; set; }
+        public ICollection<User> Users { get; set; } = [];
     }
 }

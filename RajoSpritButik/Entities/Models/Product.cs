@@ -14,6 +14,7 @@ namespace Entities.Models
         public Manufacturer Manufacturer { get; set; }
         public Category Category { get; set; }
         public ICollection<OrderRow> OrderRows { get; set; } = [];
-        
+        public ICollection<ShoppingCartRow> ShoppingCartRows { get; set; } = [];
+
     }
 }
