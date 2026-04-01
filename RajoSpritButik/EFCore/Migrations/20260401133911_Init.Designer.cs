@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCore.Migrations
 {
     [DbContext(typeof(RajoDbContext))]
-    [Migration("20260401123743_Init")]
+    [Migration("20260401133911_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -60,7 +60,7 @@ namespace EFCore.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Adresses");
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("Entities.Models.Category", b =>
@@ -338,11 +338,7 @@ namespace EFCore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AddressId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AddressId1")
+                    b.Property<int>("AddressId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -353,18 +349,14 @@ namespace EFCore.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RoleId1")
+                    b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId1");
+                    b.HasIndex("AddressId");
 
-                    b.HasIndex("RoleId1");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -374,7 +366,8 @@ namespace EFCore.Migrations
                     b.HasOne("Entities.Models.Country", "Country")
                         .WithMany("Addresses")
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Country");
                 });
@@ -489,14 +482,14 @@ namespace EFCore.Migrations
                 {
                     b.HasOne("Entities.Models.Address", "Address")
                         .WithMany("Users")
-                        .HasForeignKey("AddressId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Entities.Models.Role", "Role")
                         .WithMany("Users")
-                        .HasForeignKey("RoleId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Address");

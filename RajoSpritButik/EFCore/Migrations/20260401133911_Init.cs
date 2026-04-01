@@ -91,7 +91,7 @@ namespace EFCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Adresses",
+                name: "Addresses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -104,9 +104,9 @@ namespace EFCore.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Adresses", x => x.Id);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Adresses_Countries_CountryId",
+                        name: "FK_Addresses_Countries_CountryId",
                         column: x => x.CountryId,
                         principalTable: "Countries",
                         principalColumn: "Id",
@@ -140,27 +140,25 @@ namespace EFCore.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddressId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RoleId1 = table.Column<int>(type: "int", nullable: false),
-                    AddressId1 = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Adresses_AddressId1",
-                        column: x => x.AddressId1,
-                        principalTable: "Adresses",
+                        name: "FK_Users_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Users_Roles_RoleId1",
-                        column: x => x.RoleId1,
+                        name: "FK_Users_Roles_RoleId",
+                        column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -298,8 +296,8 @@ namespace EFCore.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Adresses_CountryId",
-                table: "Adresses",
+                name: "IX_Addresses_CountryId",
+                table: "Addresses",
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
@@ -358,14 +356,14 @@ namespace EFCore.Migrations
                 column: "ShoppingCartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_AddressId1",
+                name: "IX_Users_AddressId",
                 table: "Users",
-                column: "AddressId1");
+                column: "AddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_RoleId1",
+                name: "IX_Users_RoleId",
                 table: "Users",
-                column: "RoleId1");
+                column: "RoleId");
         }
 
         /// <inheritdoc />
@@ -405,7 +403,7 @@ namespace EFCore.Migrations
                 name: "Manufacturers");
 
             migrationBuilder.DropTable(
-                name: "Adresses");
+                name: "Addresses");
 
             migrationBuilder.DropTable(
                 name: "Roles");

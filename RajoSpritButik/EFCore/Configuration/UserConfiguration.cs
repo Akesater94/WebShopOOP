@@ -1,9 +1,6 @@
 ﻿using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EFCore.Configuration;
 
@@ -17,7 +14,7 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.CreatedAt).IsRequired();
 
-        builder.HasOne(u => u.Role).WithMany(r => r.Users);
-        builder.HasOne(u => u.Address).WithMany(a => a.Users);
+        builder.HasOne(u => u.Role).WithMany(r => r.Users).HasForeignKey(u => u.RoleId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(u => u.Address).WithMany(a => a.Users).HasForeignKey(u => u.AddressId).OnDelete(DeleteBehavior.Restrict);
     }
 }
