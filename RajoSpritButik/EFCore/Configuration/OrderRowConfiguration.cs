@@ -1,13 +1,10 @@
 ﻿using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EFCore.Configuration;
 
-internal class OrderRowCofiguration : IEntityTypeConfiguration<OrderRow>
+internal class OrderRowConfiguration : IEntityTypeConfiguration<OrderRow>
 {
     public void Configure(EntityTypeBuilder<OrderRow> builder)
     {

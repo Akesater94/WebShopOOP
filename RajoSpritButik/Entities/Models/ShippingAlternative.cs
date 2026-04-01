@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Entities.Models
+﻿namespace Entities.Models
 {
     public class ShippingAlternative
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         public decimal Price { get; set; }
-        public ICollection<Order> Orders = [];
+        public ICollection<Order> Orders { get; set; } = [];
     }
 }

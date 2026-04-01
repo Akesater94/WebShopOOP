@@ -3,22 +3,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EFCore
 {
-    internal class RajoDbContext : DbContext
+    public class RajoDbContext : DbContext
     {
-        public DbSet<Address> Adresses { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<ContactInfo> ContactInfos { get; set; }
-        public DbSet<ContactType> ContactTypes { get; set; }
-        public DbSet<Country> Countries { get; set; }
-        public DbSet<Manufacturer> Manufacturers { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderRow> OrderRows { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<ShippingAlternative> ShippingAlternatives { get; set; }
-        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
-        public DbSet<ShoppingCartRow> ShoppingCartRows { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Address> Addresses { get; set; } = null!;
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<ContactInfo> ContactInfos { get; set; } = null!;
+        public DbSet<ContactType> ContactTypes { get; set; } = null!;
+        public DbSet<Country> Countries { get; set; } = null!;
+        public DbSet<Manufacturer> Manufacturers { get; set; } = null!;
+        public DbSet<Order> Orders { get; set; } = null!;
+        public DbSet<OrderRow> OrderRows { get; set; } = null!;
+        public DbSet<Product> Products { get; set; } = null!;
+        public DbSet<Role> Roles { get; set; } = null!;
+        public DbSet<ShippingAlternative> ShippingAlternatives { get; set; } = null!;
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; } = null!;
+        public DbSet<ShoppingCartRow> ShoppingCartRows { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Entities.Models
+﻿namespace Entities.Models
 {
     public class ContactType
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public ICollection<ContactInfo> ContactInfos { get; set; } = [];     
+        public string Name { get; set; } = null!;
+        public ICollection<ContactInfo> ContactInfos { get; set; } = [];
     }
 }
