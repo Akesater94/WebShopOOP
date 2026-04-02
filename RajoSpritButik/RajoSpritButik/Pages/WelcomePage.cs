@@ -1,6 +1,6 @@
 ﻿using Entities.Models;
 
-namespace RajoSpritButik;
+namespace RajoSpritButik.Pages;
 
 internal class WelcomePage : Page
 {
