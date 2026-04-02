@@ -19,7 +19,7 @@ internal class App
     }
     public async Task Run()
     {
-        await ChangePage(new ChangePageRequest { Page = "welcome" });
+        await ChangePage(new ChangePageRequest { Page = "menu" });
         while (true)
         {
             Page.Width = Console.WindowWidth - 30;
@@ -55,6 +55,9 @@ internal class App
             case "welcome":
                 List<Product> showcaseProducts = await ProductService.GetShowCaseProductsAsync();
                 Page = new WelcomePage(showcaseProducts, 0, 10, Console.WindowWidth - 30, 40);
+                break;
+            case "menu":
+                Page = new MenuPage(0, 10, Console.WindowWidth - 30, 40);
                 break;
             default:
                 Console.WriteLine(request.Page);
