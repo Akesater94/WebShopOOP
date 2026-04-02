@@ -62,7 +62,7 @@ internal class WelcomePage : Page
 
     public override ChangePageRequest? ChangePage()
     {
-        if (SelectedItem != null)
+        if (ShouldChangePage)
         {
             return new ChangePageRequest() { Page = "products", Query = SelectedItem.ToString() };
         }
