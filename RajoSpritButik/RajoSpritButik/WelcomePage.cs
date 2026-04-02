@@ -4,19 +4,13 @@ namespace RajoSpritButik;
 
 internal class WelcomePage : Page
 {
-
-    public List<Product> Products { get; set; }
+    public List<Product> Products { get; set; } = [];
 
     public char? SelectedItem = null;
 
-    public WelcomePage(int x, int y, int width, int height) : base(x, y, width, height)
+    public WelcomePage(List<Product> products, int x, int y, int width, int height) : base(x, y, width, height)
     {
-        Products = new List<Product>
-        {
-            new Product {Name = "Test1"},
-            new Product {Name = "Test2"},
-            new Product {Name = "Test3"},
-        };
+        Products = products;
     }
 
     public override void Draw()
@@ -26,7 +20,11 @@ internal class WelcomePage : Page
         char nextChar = 'A';
         foreach (Product product in Products)
         {
-            List<string> items = new() { product.Name, "Press " + nextChar.ToString() + " to select this product" };
+            List<string> items = new() {
+                product.Name,
+                "Pris: " + product.Price.ToString() + "kr",
+                "Tryck " + nextChar.ToString() + " för att välja produkt"
+            };
             Window productWindow = new("", nextX, nextY, items);
             if (nextX + productWindow.WindowWidth > Width)
             {
@@ -45,10 +43,32 @@ internal class WelcomePage : Page
     public override void HandleInput()
     {
         SelectedItem = Console.ReadKey(true).KeyChar;
+        switch (SelectedItem.ToString().ToUpper())
+        {
+            case "A":
+                ShouldChangePage = true;
+                break;
+            case "B":
+                ShouldChangePage = true;
+                break;
+            case "C":
+                ShouldChangePage = true;
+                break;
+            default:
+                ShouldChangePage = false;
+                break;
+        }
     }
 
-    public override Page? ChangePage()
+    public override ChangePageRequest? ChangePage()
     {
-        return null;
+        if (SelectedItem != null)
+        {
+            return new ChangePageRequest() { Page = "products", Query = SelectedItem.ToString() };
+        }
+        else
+        {
+            return null;
+        }
     }
 }

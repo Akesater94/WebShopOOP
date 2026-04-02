@@ -18,5 +18,5 @@ internal abstract class Page
 
     public abstract void Draw();
     public abstract void HandleInput();
-    public abstract Page? ChangePage();
+    public abstract ChangePageRequest? ChangePage();
 }
