@@ -10,4 +10,9 @@ public class ProductRepository(RajoDbContext context) : IProductRepository
     {
         return await context.Products.Where(p => p.Showcase).ToListAsync();
     }
+
+    public async Task<List<Product>> GetAllProductsByCategoryAsync(int categoryId)
+    {
+        return await context.Products.Where(p => p.CategoryId == categoryId).ToListAsync();
+    }
 }

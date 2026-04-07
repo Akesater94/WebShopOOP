@@ -68,6 +68,10 @@ internal class App
                 List<Category> categories = await CategoryService.GetAllCategoriesAsync();
                 Page = new CategoriesPage(categories, 0, 10, Console.WindowWidth - 30, 40);
             break;
+            case "category":
+                List<Product> productsByCategory = await ProductService.GetAllProductsByCategoryAsync(int.Parse(request.Query));
+                Page = new CategoryPage(productsByCategory, 0, 10, Console.WindowWidth - 30, 40);
+                break;
             default:
                 Console.WriteLine(request.Page);
                 Console.WriteLine(request.Query);
