@@ -12,11 +12,15 @@ internal class App
     public Page Page { get; set; } = null!;
     public RajoDbContext Context { get; set; }
     public IProductService ProductService { get; set; }
+    public ICategoryService CategoryService { get; set; }
     public App()
     {
         Context = new();
         ProductRepository productRepository = new(Context);
         ProductService = new ProductService(productRepository);
+
+        CategoryRepository categoryRepository = new(Context);
+        CategoryService = new CategoryService(categoryRepository);
     }
     public async Task Run()
     {
@@ -60,6 +64,10 @@ internal class App
             case "menu":
                 Page = new MenuPage(0, 10, Console.WindowWidth - 30, 40);
                 break;
+            case "categories":
+                List<Category> categories = await CategoryService.GetAllCategoriesAsync();
+                Page = new CategoriesPage(categories, 0, 10, Console.WindowWidth - 30, 40);
+            break;
             default:
                 Console.WriteLine(request.Page);
                 Console.WriteLine(request.Query);

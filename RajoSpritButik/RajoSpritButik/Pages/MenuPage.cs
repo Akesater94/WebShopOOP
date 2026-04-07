@@ -21,7 +21,7 @@ namespace RajoSpritButik.Pages
                     case '1':
                         return new ChangePageRequest() { Page = "welcome" };
                     case '2':
-                        return null;
+                        return new ChangePageRequest() { Page = "categories"};
                     case '3':
                         return null;
                     case '4':

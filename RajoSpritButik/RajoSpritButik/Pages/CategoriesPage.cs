@@ -31,6 +31,7 @@ namespace RajoSpritButik.Pages
                 categoryList.Add($"{i+1}. {Categories[i].Name}");
             }
             Window categoryWindow = new Window("Kategorier", X, Y, categoryList);
+            categoryWindow.Draw();
         }
 
         public override void HandleInput()
