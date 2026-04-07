@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Principal;
-using System.Text;
-
-namespace RajoSpritButik.Pages
+﻿namespace RajoSpritButik.Pages
 {
     internal class MenuPage : Page
     {
@@ -21,9 +16,9 @@ namespace RajoSpritButik.Pages
                     case '1':
                         return new ChangePageRequest() { Page = "welcome" };
                     case '2':
-                        return new ChangePageRequest() { Page = "categories"};
+                        return new ChangePageRequest() { Page = "categories" };
                     case '3':
-                        return null;
+                        return new ChangePageRequest() { Page = "shopping-cart" };
                     case '4':
                         return null;
                     default:

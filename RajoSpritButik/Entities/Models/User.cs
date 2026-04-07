@@ -11,5 +11,6 @@
         public DateTime CreatedAt { get; set; }
         public ICollection<Order> Orders { get; set; } = [];
         public ICollection<ContactInfo> ContactInfos { get; set; } = [];
+        public ICollection<ShoppingCart> ShoppingCarts { get; set; } = [];
     }
 }
