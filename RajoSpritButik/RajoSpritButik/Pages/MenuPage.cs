@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Principal;
 using System.Text;
 
-namespace RajoSpritButik
+namespace RajoSpritButik.Pages
 {
     internal class MenuPage : Page
     {
@@ -21,7 +21,7 @@ namespace RajoSpritButik
                     case '1':
                         return new ChangePageRequest() { Page = "welcome" };
                     case '2':
-                        return null;
+                        return new ChangePageRequest() { Page = "categories"};
                     case '3':
                         return null;
                     case '4':
