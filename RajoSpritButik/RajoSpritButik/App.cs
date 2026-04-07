@@ -71,11 +71,10 @@ internal class App
             case "categories":
                 List<Category> categories = await CategoryService.GetAllCategoriesAsync();
                 Page = new CategoriesPage(categories, 0, 10, Console.WindowWidth - 30, 40);
-            break;
+                break;
             case "category":
                 List<Product> productsByCategory = await ProductService.GetAllProductsByCategoryAsync(int.Parse(request.Query));
                 Page = new CategoryPage(productsByCategory, 0, 10, Console.WindowWidth - 30, 40);
-                break;
                 break;
             case "shopping-cart":
                 ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(2);
