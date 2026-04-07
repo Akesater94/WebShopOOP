@@ -13,6 +13,7 @@ internal class App
     public RajoDbContext Context { get; set; }
     public IProductService ProductService { get; set; }
     public ICategoryService CategoryService { get; set; }
+    public IShoppingCartService ShoppingCartService { get; set; }
     public App()
     {
         Context = new();
@@ -21,6 +22,9 @@ internal class App
 
         CategoryRepository categoryRepository = new(Context);
         CategoryService = new CategoryService(categoryRepository);
+
+        ShoppingCartRepository shoppingCartRepository = new(Context);
+        ShoppingCartService = new ShoppingCartService(shoppingCartRepository);
     }
     public async Task Run()
     {
@@ -67,10 +71,14 @@ internal class App
             case "categories":
                 List<Category> categories = await CategoryService.GetAllCategoriesAsync();
                 Page = new CategoriesPage(categories, 0, 10, Console.WindowWidth - 30, 40);
-            break;
+                break;
             case "category":
                 List<Product> productsByCategory = await ProductService.GetAllProductsByCategoryAsync(int.Parse(request.Query));
                 Page = new CategoryPage(productsByCategory, 0, 10, Console.WindowWidth - 30, 40);
+                break;
+            case "shopping-cart":
+                ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(2);
+                Page = new ShoppingCartPage(shoppingCart, 0, 10, Console.WindowWidth - 30, 40);
                 break;
             default:
                 Console.WriteLine(request.Page);

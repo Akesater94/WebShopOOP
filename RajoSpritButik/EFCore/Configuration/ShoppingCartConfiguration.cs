@@ -1,9 +1,6 @@
 ﻿using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EFCore.Configuration;
 
@@ -14,5 +11,7 @@ internal class ShoppingCartConfiguration : IEntityTypeConfiguration<ShoppingCart
         builder.HasKey(sc => sc.Id);
 
         builder.Property(sc => sc.Name).IsRequired().HasMaxLength(256);
+
+        builder.HasOne(sc => sc.User).WithMany(u => u.ShoppingCarts).HasForeignKey(sc => sc.UserId).OnDelete(DeleteBehavior.Restrict);
     }
 }
