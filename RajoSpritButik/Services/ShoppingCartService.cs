@@ -9,4 +9,9 @@ public class ShoppingCartService(IShoppingCartRepository shoppingCartRepository)
     {
         return await shoppingCartRepository.GetByUserIdAsync(id);
     }
+
+    public async Task RemoveRowAsync(int rowId)
+    {
+        await shoppingCartRepository.RemoveRowAsync(rowId);
+    }
 }
