@@ -7,6 +7,8 @@ internal class WelcomePage : Page
     public List<Product> Products { get; set; } = [];
 
     public char? SelectedItem = null;
+    public bool AddMode {  get; set; }
+    public Product ProductToAdd { get; set; }
 
     public WelcomePage(List<Product> products, int x, int y, int width, int height) : base(x, y, width, height)
     {
@@ -42,6 +44,21 @@ internal class WelcomePage : Page
 
     public override void HandleInput()
     {
+        if (AddMode)
+        {
+            var key = Console.ReadKey().KeyChar;
+            if (int.TryParse(key.ToString(), out var productId))
+            {
+                productId -= 1;
+                if (productId <= Products.Count && productId >= 0)
+                {
+                    ProductToAdd = Products[productId];
+                    ShouldChangePage = true;
+                }
+
+            }
+
+        }
         SelectedItem = Console.ReadKey(true).KeyChar;
         switch (SelectedItem.ToString().ToUpper())
         {
