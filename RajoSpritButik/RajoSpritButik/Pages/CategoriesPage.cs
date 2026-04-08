@@ -1,8 +1,4 @@
 ﻿using Entities.Models;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RajoSpritButik.Pages
 {
@@ -10,7 +6,7 @@ namespace RajoSpritButik.Pages
     {
         public List<Category> Categories { get; set; }
         public Category? SelectedItem { get; set; }
-        public CategoriesPage(List<Category> categories, int x, int y, int width, int height ) : base(x, y, width, height)
+        public CategoriesPage(List<Category> categories, int x, int y, int width, int height) : base(x, y, width, height)
         {
             Categories = categories;
         }
@@ -18,7 +14,7 @@ namespace RajoSpritButik.Pages
         {
             if (ShouldChangePage && SelectedItem != null)
             {
-                return new ChangePageRequest() { Page = "category", Query = SelectedItem.Id.ToString() };
+                return new ChangePageRequest() { Page = "category", Query = SelectedItem.Id };
             }
             return null;
         }
@@ -28,7 +24,7 @@ namespace RajoSpritButik.Pages
             List<string> categoryList = new List<string>();
             for (int i = 0; i < Categories.Count; i++)
             {
-                categoryList.Add($"{i+1}. {Categories[i].Name}");
+                categoryList.Add($"{i + 1}. {Categories[i].Name}");
             }
             Window categoryWindow = new Window("Kategorier", X, Y, categoryList);
             categoryWindow.Draw();
