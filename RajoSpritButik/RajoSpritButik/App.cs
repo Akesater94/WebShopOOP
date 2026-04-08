@@ -14,6 +14,9 @@ internal class App
     public IProductService ProductService { get; set; }
     public ICategoryService CategoryService { get; set; }
     public IShoppingCartService ShoppingCartService { get; set; }
+    public IUserService UserService { get; set; }
+    User? User { get; set; }
+    bool LoggedIn => User != null;
     public App()
     {
         Context = new();
@@ -25,6 +28,9 @@ internal class App
 
         ShoppingCartRepository shoppingCartRepository = new(Context);
         ShoppingCartService = new ShoppingCartService(shoppingCartRepository);
+
+        UserRepository userRepository = new(Context);
+        UserService = new UserService(userRepository);
     }
     public async Task Run()
     {
@@ -49,7 +55,7 @@ internal class App
 
     public void DrawHeader()
     {
-        List<string> listItems = new() { "Rajos Spritbutik", "Kunglig hovleverantör" };
+        List<string> listItems = new() { "Rajos Spritbutik", "Kunglig hovleverantör", User?.UserName ?? "" };
 
         string longestItem = listItems.OrderBy(s => s.Length).First();
 
@@ -67,7 +73,7 @@ internal class App
                 break;
 
             case "menu":
-                Page = new MenuPage(0, 10, Console.WindowWidth - 30, 40);
+                Page = new MenuPage(User, 0, 10, Console.WindowWidth - 30, 40);
                 break;
 
             case "categories":
@@ -97,7 +103,11 @@ internal class App
                 switch (request.Action)
                 {
                     case RequestAction.Get:
-                        ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(2);
+                        ShoppingCart? shoppingCart = null;
+                        if (User != null)
+                        {
+                            shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
+                        }
                         Page = new ShoppingCartPage(shoppingCart, 0, 10, Console.WindowWidth - 30, 100);
                         break;
                 }
@@ -111,8 +121,39 @@ internal class App
                         {
                             await ShoppingCartService.RemoveRowAsync(id);
                         }
-                        ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(2);
+                        ShoppingCart? shoppingCart = null;
+                        if (User != null)
+                        {
+                            shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
+                        }
                         Page = new ShoppingCartPage(shoppingCart, 0, 10, Console.WindowWidth - 30, 100);
+                        break;
+                }
+                break;
+            case "login":
+                switch (request.Action)
+                {
+                    case RequestAction.Get:
+                        Page = new LoginPage(0, 10, Console.WindowWidth - 30, 40);
+                        break;
+                    case RequestAction.Post:
+                        if (request.Query is string userName)
+                        {
+                            User = await UserService.GetUserByUserNameAsync(userName);
+                        }
+                        Page = new MenuPage(User, 0, 10, Console.WindowWidth - 30, 40);
+                        break;
+                }
+                break;
+            case "logout":
+                switch (request.Action)
+                {
+                    case RequestAction.Get:
+                        Page = new LogoutPage(0, 10, Console.WindowWidth - 30, 40);
+                        break;
+                    case RequestAction.Post:
+                        User = null;
+                        Page = new MenuPage(User, 0, 10, Console.WindowWidth - 30, 40);
                         break;
                 }
                 break;
