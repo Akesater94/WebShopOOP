@@ -12,6 +12,8 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.Name).IsRequired().HasMaxLength(256);
 
+        builder.Property(u => u.UserName).IsRequired().HasMaxLength(256);
+
         builder.Property(u => u.CreatedAt).IsRequired();
 
         builder.HasOne(u => u.Role).WithMany(r => r.Users).HasForeignKey(u => u.RoleId).OnDelete(DeleteBehavior.Restrict);

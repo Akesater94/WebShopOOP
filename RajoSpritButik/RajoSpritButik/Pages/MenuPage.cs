@@ -1,11 +1,14 @@
-﻿namespace RajoSpritButik.Pages
+﻿using Entities.Models;
+
+namespace RajoSpritButik.Pages
 {
     internal class MenuPage : Page
     {
         public char? SelectedItem { get; set; }
-        public MenuPage(int x, int y, int width, int height) : base(x, y, width, height)
+        public User? User { get; set; }
+        public MenuPage(User? user, int x, int y, int width, int height) : base(x, y, width, height)
         {
-
+            User = user;
         }
         public override ChangePageRequest? ChangePage()
         {
@@ -20,7 +23,20 @@
                     case '3':
                         return new ChangePageRequest() { Page = "shopping-cart" };
                     case '4':
-                        return null;
+                        if (User == null)
+                        {
+                            return new ChangePageRequest() { Page = "login" };
+                        }
+                        else
+                        {
+                            return new ChangePageRequest() { Page = "logout" };
+                        }
+                    case '5':
+                        if (User?.Role.Name == "Admin")
+                        {
+                            return new ChangePageRequest() { Page = "admin" };
+                        }
+                        break;
                     default:
                         return null;
                 }
@@ -36,8 +52,20 @@
                 "1. Hem",
                 "2. Handla",
                 "3. Gå till varukorg",
-                "4. Logga in (Administratör)"
+
             };
+            if (User == null)
+            {
+                menuContent.Add("4. Logga in");
+            }
+            else
+            {
+                menuContent.Add("4. Logga ut");
+            }
+            if (User?.Role.Name == "Admin")
+            {
+                menuContent.Add("5. Admin");
+            }
             Window menuWindow = new Window("Menu", X, Y, menuContent);
             menuWindow.Draw();
         }
@@ -59,6 +87,12 @@
                     break;
                 case '4':
                     ShouldChangePage = true;
+                    break;
+                case '5':
+                    if (User?.Role.Name == "Admin")
+                    {
+                        ShouldChangePage = true;
+                    }
                     break;
                 default:
                     ShouldChangePage = false;
