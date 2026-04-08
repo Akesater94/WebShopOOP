@@ -65,9 +65,11 @@ internal class App
                 List<Product> showcaseProducts = await ProductService.GetShowCaseProductsAsync();
                 Page = new WelcomePage(showcaseProducts, 0, 10, Console.WindowWidth - 30, 40);
                 break;
+
             case "menu":
                 Page = new MenuPage(0, 10, Console.WindowWidth - 30, 40);
                 break;
+
             case "categories":
                 switch (request.Action)
                 {
@@ -77,6 +79,7 @@ internal class App
                         break;
                 }
                 break;
+
             case "category":
                 switch (request.Action)
                 {
@@ -89,12 +92,27 @@ internal class App
                         break;
                 }
                 break;
+
             case "shopping-cart":
                 switch (request.Action)
                 {
                     case RequestAction.Get:
                         ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(2);
-                        Page = new ShoppingCartPage(shoppingCart, 0, 10, Console.WindowWidth - 30, 40);
+                        Page = new ShoppingCartPage(shoppingCart, 0, 10, Console.WindowWidth - 30, 100);
+                        break;
+                }
+                break;
+
+            case "shopping-cart-row":
+                switch (request.Action)
+                {
+                    case RequestAction.Delete:
+                        if (request.Query is int id)
+                        {
+                            await ShoppingCartService.RemoveRowAsync(id);
+                        }
+                        ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(2);
+                        Page = new ShoppingCartPage(shoppingCart, 0, 10, Console.WindowWidth - 30, 100);
                         break;
                 }
                 break;
