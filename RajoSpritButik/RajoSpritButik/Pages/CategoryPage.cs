@@ -1,8 +1,4 @@
 ﻿using Entities.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace RajoSpritButik.Pages;
 
@@ -21,7 +17,7 @@ internal class CategoryPage : Page
     {
         if (ShouldChangePage && SelectedItem != null)
         {
-            return new ChangePageRequest() { Page = "product", Query = SelectedItem.Id.ToString() };
+            return new ChangePageRequest() { Page = "product", Query = SelectedItem.Id };
         }
         return null;
     }

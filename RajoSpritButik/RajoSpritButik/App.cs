@@ -69,16 +69,34 @@ internal class App
                 Page = new MenuPage(0, 10, Console.WindowWidth - 30, 40);
                 break;
             case "categories":
-                List<Category> categories = await CategoryService.GetAllCategoriesAsync();
-                Page = new CategoriesPage(categories, 0, 10, Console.WindowWidth - 30, 40);
+                switch (request.Action)
+                {
+                    case RequestAction.Get:
+                        List<Category> categories = await CategoryService.GetAllCategoriesAsync();
+                        Page = new CategoriesPage(categories, 0, 10, Console.WindowWidth - 30, 40);
+                        break;
+                }
                 break;
             case "category":
-                List<Product> productsByCategory = await ProductService.GetAllProductsByCategoryAsync(int.Parse(request.Query));
-                Page = new CategoryPage(productsByCategory, 0, 10, Console.WindowWidth - 30, 40);
+                switch (request.Action)
+                {
+                    case RequestAction.Get:
+                        if (request.Query is int id)
+                        {
+                            List<Product> productsByCategory = await ProductService.GetAllProductsByCategoryAsync(id);
+                            Page = new CategoryPage(productsByCategory, 0, 10, Console.WindowWidth - 30, 40);
+                        }
+                        break;
+                }
                 break;
             case "shopping-cart":
-                ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(2);
-                Page = new ShoppingCartPage(shoppingCart, 0, 10, Console.WindowWidth - 30, 40);
+                switch (request.Action)
+                {
+                    case RequestAction.Get:
+                        ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(2);
+                        Page = new ShoppingCartPage(shoppingCart, 0, 10, Console.WindowWidth - 30, 40);
+                        break;
+                }
                 break;
             default:
                 Console.WriteLine(request.Page);
