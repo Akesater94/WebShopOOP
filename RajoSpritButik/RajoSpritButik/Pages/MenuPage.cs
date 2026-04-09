@@ -34,7 +34,7 @@ namespace RajoSpritButik.Pages
                     case '5':
                         if (User?.Role.Name == "Admin")
                         {
-                            return new ChangePageRequest() { Page = "admin" };
+                            return new ChangePageRequest() { Page = "admin-menu" };
                         }
                         break;
                     default:
