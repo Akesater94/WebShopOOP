@@ -17,6 +17,5 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.CreatedAt).IsRequired();
 
         builder.HasOne(u => u.Role).WithMany(r => r.Users).HasForeignKey(u => u.RoleId).OnDelete(DeleteBehavior.Restrict);
-        builder.HasOne(u => u.Address).WithMany(a => a.Users).HasForeignKey(u => u.AddressId).OnDelete(DeleteBehavior.Restrict);
     }
 }

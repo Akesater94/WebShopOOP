@@ -15,7 +15,10 @@ internal class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.Property(o => o.Status).IsRequired().HasMaxLength(256);
 
+
         builder.HasOne(o => o.ShippingAlternative).WithMany(sa => sa.Orders).HasForeignKey(o => o.ShippingAlternativeId).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(o => o.User).WithMany(u => u.Orders).HasForeignKey(o => o.UserId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(o => o.PaymentAlternative).WithMany(pa => pa.Orders).HasForeignKey(o => o.PaymentAlternativeId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(o => o.Address).WithMany(a => a.Orders).HasForeignKey(o => o.AddressId).OnDelete(DeleteBehavior.Restrict);
     }
 }
