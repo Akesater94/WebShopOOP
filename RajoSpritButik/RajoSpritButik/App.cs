@@ -129,6 +129,20 @@ internal class App
                         }
                         Page = new ShoppingCartPage(shoppingCart, 0, 10, Console.WindowWidth - 30, 100);
                         break;
+
+                    case RequestAction.Post:
+
+                        if (request.Query is int productId)
+                        {
+                            shoppingCart = null;
+                            if (User != null)
+                            {
+                                shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
+                            }
+
+                            await ShoppingCartService.AddRowAsync(shoppingCart.Id, productId);
+                        }
+                        break;
                 }
                 break;
             case "login":

@@ -5,6 +5,11 @@ namespace Services;
 
 public class ShoppingCartService(IShoppingCartRepository shoppingCartRepository) : IShoppingCartService
 {
+    public async Task AddRowAsync(int shoppingCartId, int productId)
+    {
+        await shoppingCartRepository.AddRowAsync(shoppingCartId, productId);      
+    }
+
     public async Task<ShoppingCart?> GetByUserIdAsync(int id)
     {
         return await shoppingCartRepository.GetByUserIdAsync(id);
@@ -14,4 +19,5 @@ public class ShoppingCartService(IShoppingCartRepository shoppingCartRepository)
     {
         await shoppingCartRepository.RemoveRowAsync(rowId);
     }
+
 }

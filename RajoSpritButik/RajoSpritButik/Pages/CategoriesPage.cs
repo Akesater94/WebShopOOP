@@ -1,22 +1,27 @@
 ﻿using Entities.Models;
+using System.Net.Sockets;
 
 namespace RajoSpritButik.Pages
 {
     internal class CategoriesPage : Page
     {
         public List<Category> Categories { get; set; }
-        public Category? SelectedItem { get; set; }
+        public Category? SelectedCategory { get; set; }
+        public char? SelectedItem { get; set; }
         public CategoriesPage(List<Category> categories, int x, int y, int width, int height) : base(x, y, width, height)
         {
             Categories = categories;
         }
         public override ChangePageRequest? ChangePage()
         {
-            if (ShouldChangePage && SelectedItem != null)
+            if (ShouldChangePage && SelectedCategory != null)
             {
-                return new ChangePageRequest() { Page = "category", Query = SelectedItem.Id };
+                return new ChangePageRequest() { Page = "category", Query = SelectedCategory.Id };
             }
-            return null;
+            else
+            {
+                return new ChangePageRequest() { Page = "menu"};
+            }
         }
 
         public override void Draw()
@@ -28,19 +33,36 @@ namespace RajoSpritButik.Pages
             }
             Window categoryWindow = new Window("Kategorier", X, Y, categoryList);
             categoryWindow.Draw();
+
+            Console.WriteLine("Tryck en siffra för att välja en kategori.");
+            Console.WriteLine("Tryck C för att gå tillbaka till menyn.");
+
         }
 
         public override void HandleInput()
         {
-            var key = Console.ReadKey(true).KeyChar;
+            SelectedItem = Console.ReadKey(true).KeyChar;
 
-            if (int.TryParse(key.ToString(), out int keynum))
+            if (int.TryParse(SelectedItem.ToString(), out int keynum))
             {
                 keynum -= 1;
                 if (keynum < Categories.Count && keynum >= 0)
                 {
                     ShouldChangePage = true;
-                    SelectedItem = Categories[keynum];
+                    SelectedCategory = Categories[keynum];
+                }
+            }
+            else
+            {
+                switch (SelectedItem.ToString().ToUpper())
+                {
+                    case "C":
+                        ShouldChangePage = true;
+                        break;
+
+                    default:
+                        ShouldChangePage = false;
+                        break;
                 }
             }
         }
