@@ -1,6 +1,7 @@
 ﻿using EFCore;
 using EFCore.Repositories;
 using Entities.Models;
+using RajoSpritButik.AdminPages;
 using RajoSpritButik.Pages;
 using Services;
 using Services.Interfaces;
@@ -155,6 +156,16 @@ internal class App
                         User = null;
                         Page = new MenuPage(User, 0, 10, Console.WindowWidth - 30, 40);
                         break;
+                }
+                break;
+            case "admin-menu":
+                if (User?.Role.Name == "Admin")
+                {
+                    Page = new AdminMenuPage(0, 10, Console.WindowWidth - 30, 40);
+                }
+                else
+                {
+                    Page = new MenuPage(User, 0, 10, Console.WindowWidth - 30, 40);
                 }
                 break;
             default:
