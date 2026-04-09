@@ -15,4 +15,33 @@ public class ProductRepository(RajoDbContext context) : IProductRepository
     {
         return await context.Products.Where(p => p.CategoryId == categoryId).ToListAsync();
     }
+
+    public async Task<List<Product>> GetProductsWithDetailsAsync()
+    {
+        return await context.Products
+            .Include(p => p.Category)
+            .Include(p => p.Manufacturer)
+            .ToListAsync();
+    }
+
+    public async Task<Product?> GetProductByIdWithDetailsAsync(int id)
+    {
+        return await context.Products
+            .Include(p => p.Category)
+            .Include(p => p.Manufacturer)
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public async Task UpdateAsync(Product product)
+    {
+        context.Update(product);
+        await context.SaveChangesAsync();
+    }
+
+
+    public async Task RemoveAsync(Product product)
+    {
+        context.Remove(product);
+        await context.SaveChangesAsync();
+    }
 }

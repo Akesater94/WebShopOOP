@@ -24,26 +24,13 @@ internal class App
     public App()
     {
         Context = new();
-        ProductRepository productRepository = new(Context);
-        ProductService = new ProductService(productRepository);
-
-        CategoryRepository categoryRepository = new(Context);
-        CategoryService = new CategoryService(categoryRepository);
-
-        ShoppingCartRepository shoppingCartRepository = new(Context);
-        ShoppingCartService = new ShoppingCartService(shoppingCartRepository);
-
-        UserAddressRepository userAddressRepository = new(Context);
-        UserAddressService = new UserAddressService(userAddressRepository);
-
-        UserRepository userRepository = new(Context);
-        UserService = new UserService(userRepository, UserAddressService);
-
-        CountryRepository countryRepository = new(Context);
-        CountryService = new CountryService(countryRepository);
-
-        AddressRepository addressRepository = new AddressRepository(Context);
-        AddressService = new AddressService(addressRepository, CountryService);
+        ProductService = new ProductService(new ProductRepository(Context));
+        CategoryService = new CategoryService(new CategoryRepository(Context));
+        ShoppingCartService = new ShoppingCartService(new ShoppingCartRepository(Context));
+        UserAddressService = new UserAddressService(new UserAddressRepository(Context));
+        UserService = new UserService(new UserRepository(Context), UserAddressService);
+        CountryService = new CountryService(new CountryRepository(Context));
+        AddressService = new AddressService(new AddressRepository(Context), CountryService);
     }
     public async Task Run()
     {
@@ -57,6 +44,7 @@ internal class App
             Page.HandleInput();
             if (Page.ShouldChangePage)
             {
+
                 ChangePageRequest? request = Page.ChangePage();
                 if (request != null)
                 {
@@ -78,6 +66,15 @@ internal class App
 
     public async Task ChangePage(ChangePageRequest request)
     {
+        Context = new();
+        ProductService = new ProductService(new ProductRepository(Context));
+        CategoryService = new CategoryService(new CategoryRepository(Context));
+        ShoppingCartService = new ShoppingCartService(new ShoppingCartRepository(Context));
+        UserAddressService = new UserAddressService(new UserAddressRepository(Context));
+        UserService = new UserService(new UserRepository(Context), UserAddressService);
+        CountryService = new CountryService(new CountryRepository(Context));
+        AddressService = new AddressService(new AddressRepository(Context), CountryService);
+
         switch (request.Page)
         {
             case "welcome":
@@ -107,6 +104,41 @@ internal class App
                         {
                             List<Product> productsByCategory = await ProductService.GetAllProductsByCategoryAsync(id);
                             Page = new CategoryPage(productsByCategory, 0, 10, Console.WindowWidth - 30, 40);
+                        }
+                        break;
+                }
+                break;
+            case "product":
+                switch (request.Action)
+                {
+                    case RequestAction.Patch:
+                        {
+                            if (request.Query is Product product)
+                            {
+                                await ProductService.UpdateAsync(product);
+                                await ChangePage(new() { Page = "update-product", Query = product.Id, Action = RequestAction.Get });
+                            }
+                        }
+                        break;
+                    case RequestAction.Post:
+                        {
+                            if (request.Query is Product product)
+                            {
+                                await ProductService.UpdateAsync(product);
+                                await ChangePage(new() { Page = "manage-products" });
+                            }
+                        }
+                        break;
+                    case RequestAction.Delete:
+                        {
+                            if (request.Query is int id)
+                            {
+                                if (await ProductService.GetProductByIdWithDetailsAsync(id) is Product product)
+                                {
+                                    await ProductService.RemoveAsync(product);
+                                }
+                                await ChangePage(new() { Page = "manage-products" });
+                            }
                         }
                         break;
                 }
@@ -216,6 +248,30 @@ internal class App
                     Page = new MenuPage(User, 0, 10, Console.WindowWidth - 30, 40);
                 }
                 break;
+            case "manage-products":
+                List<Product> products = await ProductService.GetProductsWithDetailsAsync();
+                Page = new ManageProductsPage(products, 0, 10, Console.WindowWidth - 30, 40);
+                break;
+            case "update-product":
+                {
+                    if (request.Query is int id)
+                    {
+                        Product? product = await ProductService.GetProductByIdWithDetailsAsync(id);
+                        if (product != null)
+                        {
+                            Page = new UpdateProductPage(product, 0, 10, Console.WindowWidth - 30, 40);
+                        }
+                        else
+                        {
+                            await ChangePage(new() { Page = "manage-products" });
+                        }
+                    }
+                }
+                break;
+            case "create-product":
+                Page = new CreateProductPage(0, 10, Console.WindowWidth - 30, 40);
+                break;
+
             default:
                 Console.WriteLine(request.Page);
                 Console.WriteLine(request.Query);
