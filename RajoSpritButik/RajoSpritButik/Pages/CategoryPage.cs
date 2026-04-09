@@ -4,9 +4,11 @@ namespace RajoSpritButik.Pages;
 
 internal class CategoryPage : Page
 {
-    public Product SelectedItem { get; set; }
+    public char? SelectedItem { get; set; }
     public List<Product> Products { get; set; } = [];
-
+    public bool AddMode { get; set; }
+    public Product SelectedProduct { get; set; }
+    public bool SelectMode { get; set; }
 
     public CategoryPage(List<Product> products, int x, int y, int width, int height) : base(x, y, width, height)
     {
@@ -15,24 +17,41 @@ internal class CategoryPage : Page
 
     public override ChangePageRequest? ChangePage()
     {
-        if (ShouldChangePage && SelectedItem != null)
+        if (AddMode)
         {
-            return new ChangePageRequest() { Page = "product", Query = SelectedItem.Id };
+            AddMode = false;
+
+            return new ChangePageRequest() { Page = "shopping-cart-row", Action = RequestAction.Post, Query = SelectedProduct.Id };
         }
-        return null;
+        else
+        {
+            if (ShouldChangePage)
+            {
+                return new ChangePageRequest() { Page = "categories", Query = SelectedItem.ToString() };
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 
     public override void Draw()
     {
         int nextX = X;
         int nextY = Y;
-        foreach (var products in Products)
+        for (int i = 0; i < Products.Count; i++)
         {
-            List<string> productInfo = new List<string>();
-            productInfo.Add($"Pris: {products.Price.ToString()}");
-            productInfo.Add($"Lagersaldo: {products.Stock.ToString()}");
+            List<string> products = new List<string>()
+            {
+                (i+1).ToString(),
 
-            Window productWindow = new Window($"{products.Name}", nextX, nextY, productInfo);
+                "Pris: " + Products[i].Price.ToString() + "kr",
+                "Lagersaldo: " + Products[i].Stock.ToString() + " St",
+            };
+
+            Window productWindow = new(Products[i].Name, nextX, nextY, products);
+
             if (nextX + productWindow.WindowWidth > Width)
             {
                 nextX = 0;
@@ -40,13 +59,59 @@ internal class CategoryPage : Page
                 nextY += 5;
                 productWindow.Top = nextY;
             }
-            nextX += productWindow.WindowWidth + 2;
+
             productWindow.Draw();
+            nextX += productWindow.WindowWidth + 2;
         }
+
+        if (!AddMode)
+        {
+            Console.WriteLine("Tryck A för att kunna lägga till produkt i varukorgen.");
+            Console.WriteLine("Tryck C för att gå tillbaka till menyn.");
+        }
+        else
+        {
+            Console.Write("Välj en produkt att lägga till: ");
+        }
+
     }
 
     public override void HandleInput()
     {
-        Console.ReadKey();
+        if (AddMode)
+        {
+            var key = Console.ReadKey().KeyChar;
+            if (int.TryParse(key.ToString(), out var productId))
+            {
+                productId -= 1;
+                if (productId <= Products.Count && productId >= 0)
+                {
+                    SelectedProduct = Products[productId];
+                    ShouldChangePage = true;
+                }
+            }
+        }
+        else
+        {
+            SelectedItem = Console.ReadKey(true).KeyChar;
+            switch (SelectedItem.ToString().ToUpper())
+            {
+                case "A":
+                    AddMode = true;
+                    break;
+
+                case "C":
+                    ShouldChangePage = true;
+                    break;
+
+                case "S":
+                    SelectMode = true;
+                    break;
+
+                default:
+                    ShouldChangePage = false;
+                    break;
+            }
+        }
     }
 }

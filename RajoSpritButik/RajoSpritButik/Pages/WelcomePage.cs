@@ -7,27 +7,52 @@ internal class WelcomePage : Page
     public List<Product> Products { get; set; } = [];
 
     public char? SelectedItem = null;
-    public bool AddMode {  get; set; }
-    public Product ProductToAdd { get; set; }
-
+    public bool AddMode { get; set; }
+    public Product SelectedProduct { get; set; }
+    public bool SelectMode { get; set; }
     public WelcomePage(List<Product> products, int x, int y, int width, int height) : base(x, y, width, height)
     {
         Products = products;
+    }
+    public override ChangePageRequest? ChangePage()
+    {
+        if (AddMode)
+        {
+            AddMode = false;
+
+            return new ChangePageRequest() { Page = "shopping-cart-row", Action = RequestAction.Post, Query = SelectedProduct.Id };
+        }
+        else
+        {
+
+            if (ShouldChangePage)
+            {
+                return new ChangePageRequest() { Page = "menu", Query = SelectedItem.ToString() };
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 
     public override void Draw()
     {
         int nextX = X;
         int nextY = Y;
-        char nextChar = 'A';
-        foreach (Product product in Products)
+
+        for (int i = 0; i < Products.Count; i++)
         {
-            List<string> items = new() {
-                product.Name,
-                "Pris: " + product.Price.ToString() + "kr",
-                "Tryck " + nextChar.ToString() + " för att välja produkt"
+            List<string> products = new List<string>()
+            {
+                (i+1).ToString(),
+
+                "Pris: " + Products[i].Price.ToString() + "kr",
+                "Lagersaldo: " + Products[i].Stock.ToString() + " St",
             };
-            Window productWindow = new("", nextX, nextY, items);
+
+            Window productWindow = new(Products[i].Name, nextX, nextY, products);
+
             if (nextX + productWindow.WindowWidth > Width)
             {
                 nextX = 0;
@@ -35,10 +60,19 @@ internal class WelcomePage : Page
                 nextY += 5;
                 productWindow.Top = nextY;
             }
+
             productWindow.Draw();
-            var charValue = (int)nextChar;
-            nextChar = (char)(charValue + 1);
             nextX += productWindow.WindowWidth + 2;
+        }
+
+        if (!AddMode)
+        {
+            Console.WriteLine("Tryck A för att kunna lägga till produkt i varukorgen.");
+            Console.WriteLine("Tryck C för att gå tillbaka till menyn.");
+        }
+        else
+        {
+            Console.Write("Välj en produkt att lägga till: ");
         }
     }
 
@@ -52,40 +86,35 @@ internal class WelcomePage : Page
                 productId -= 1;
                 if (productId <= Products.Count && productId >= 0)
                 {
-                    ProductToAdd = Products[productId];
+                    SelectedProduct = Products[productId];
                     ShouldChangePage = true;
                 }
-
             }
-
-        }
-        SelectedItem = Console.ReadKey(true).KeyChar;
-        switch (SelectedItem.ToString().ToUpper())
-        {
-            case "A":
-                ShouldChangePage = true;
-                break;
-            case "B":
-                ShouldChangePage = true;
-                break;
-            case "C":
-                ShouldChangePage = true;
-                break;
-            default:
-                ShouldChangePage = false;
-                break;
-        }
-    }
-
-    public override ChangePageRequest? ChangePage()
-    {
-        if (ShouldChangePage)
-        {
-            return new ChangePageRequest() { Page = "products", Query = SelectedItem.ToString() };
         }
         else
         {
-            return null;
+            SelectedItem = Console.ReadKey(true).KeyChar;
+            switch (SelectedItem.ToString().ToUpper())
+            {
+
+                case "A":
+                    AddMode = true;
+                    break;
+
+                case "C":
+                    ShouldChangePage = true;
+                    break;
+
+                case "S":
+                    SelectMode = true;
+                    break;
+
+                default:
+                    ShouldChangePage = false;
+                    break;
+            }
         }
+
     }
+
 }
