@@ -9,6 +9,7 @@
         public string ZipCode { get; set; } = null!;
         public int CountryId { get; set; }
         public Country Country { get; set; } = null!;
-        public ICollection<User> Users { get; set; } = [];
+        public ICollection<UserAddress> UserAddresses { get; set; } = [];
+        public ICollection<Order> Orders { get; set; } = [];
     }
 }

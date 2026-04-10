@@ -19,6 +19,8 @@ namespace EFCore
         public DbSet<ShoppingCart> ShoppingCarts { get; set; } = null!;
         public DbSet<ShoppingCartRow> ShoppingCartRows { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<UserAddress> UserAddresses { get; set; } = null!;
+        public DbSet<PaymentAlternative> PaymentAlternatives { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

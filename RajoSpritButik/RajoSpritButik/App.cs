@@ -14,8 +14,11 @@ internal class App
     public RajoDbContext Context { get; set; }
     public IProductService ProductService { get; set; }
     public ICategoryService CategoryService { get; set; }
+    public IAddressService AddressService { get; set; }
     public IShoppingCartService ShoppingCartService { get; set; }
+    public ICountryService CountryService { get; set; }
     public IUserService UserService { get; set; }
+    public IUserAddressService UserAddressService { get; set; }
     User? User { get; set; }
     bool LoggedIn => User != null;
     public App()
@@ -30,8 +33,17 @@ internal class App
         ShoppingCartRepository shoppingCartRepository = new(Context);
         ShoppingCartService = new ShoppingCartService(shoppingCartRepository);
 
+        UserAddressRepository userAddressRepository = new(Context);
+        UserAddressService = new UserAddressService(userAddressRepository);
+
         UserRepository userRepository = new(Context);
-        UserService = new UserService(userRepository);
+        UserService = new UserService(userRepository, UserAddressService);
+
+        CountryRepository countryRepository = new(Context);
+        CountryService = new CountryService(countryRepository);
+
+        AddressRepository addressRepository = new AddressRepository(Context);
+        AddressService = new AddressService(addressRepository, CountryService);
     }
     public async Task Run()
     {
@@ -99,6 +111,18 @@ internal class App
                         break;
                 }
                 break;
+            case "user-address":
+                switch (request.Action)
+                {
+                    case RequestAction.Post:
+                        if (request.Query is Address address)
+                        {
+                            await AddressService.AddAddressAsync(address);
+                            await UserAddressService.AddUserAddressAsync(User.Id, address.Id);
+                        }
+                        break;
+                }
+                break;
 
             case "shopping-cart":
                 switch (request.Action)
@@ -113,7 +137,17 @@ internal class App
                         break;
                 }
                 break;
+            case "checkout":
+                {
+                    if (User != null)
+                    {
+                        List<Address> addresses = await UserService.GetAllAddressesAsync(User.Id);
+                        ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
 
+                        Page = new CheckoutPage(addresses, shoppingCart, 0, 10, Console.WindowWidth - 30, 100);
+                    }
+                }
+                break;
             case "shopping-cart-row":
                 switch (request.Action)
                 {
