@@ -13,6 +13,7 @@ internal class App
     public Page Page { get; set; } = null!;
     public RajoDbContext Context { get; set; }
     public IProductService ProductService { get; set; }
+    public IShippingAlternativeService ShippingAlternativeService { get; set; }
     public ICategoryService CategoryService { get; set; }
     public IAddressService AddressService { get; set; }
     public IShoppingCartService ShoppingCartService { get; set; }
@@ -31,6 +32,7 @@ internal class App
         UserService = new UserService(new UserRepository(Context), UserAddressService);
         CountryService = new CountryService(new CountryRepository(Context));
         AddressService = new AddressService(new AddressRepository(Context), CountryService);
+        ShippingAlternativeService = new ShippingAlternativeService(new ShippingAlternativeRepository(Context));
     }
     public async Task Run()
     {
@@ -74,6 +76,7 @@ internal class App
         UserService = new UserService(new UserRepository(Context), UserAddressService);
         CountryService = new CountryService(new CountryRepository(Context));
         AddressService = new AddressService(new AddressRepository(Context), CountryService);
+        ShippingAlternativeService = new ShippingAlternativeService(new ShippingAlternativeRepository(Context));
 
         switch (request.Page)
         {
@@ -169,17 +172,18 @@ internal class App
                         break;
                 }
                 break;
+
             case "checkout":
                 {
                     if (User != null)
                     {
                         List<Address> addresses = await UserService.GetAllAddressesAsync(User.Id);
                         ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
-
-                        Page = new CheckoutPage(addresses, shoppingCart, 0, 10, Console.WindowWidth - 30, 100);
+                        List<ShippingAlternative> shippingAlternatives = await ShippingAlternativeService.GetAllShippingAlternativesAsync();
+                        Page = new CheckoutPage(addresses, shoppingCart, shippingAlternatives, 0, 10, Console.WindowWidth - 30, 100);
                     }
+                    break;
                 }
-                break;
             case "shopping-cart-row":
                 switch (request.Action)
                 {

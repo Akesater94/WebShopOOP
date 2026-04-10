@@ -12,24 +12,27 @@ internal class CheckoutPage : Page
 
     public char? SelectedItem = null;
     public List<Address> Addresses { get; set; }
+    public ShippingAlternative SelectedShippingAlternative { get; set; }
+    public List<ShippingAlternative> ShippingAlternatives { get; set; }
     public Address SelectedAddress { get; set; } = null!;
     public int Step { get; set; } = 1;
 
-    public CheckoutPage(List<Address> addresses, ShoppingCart shoppingCart, int x, int y, int width, int height) : base(x, y, width, height)
+    public CheckoutPage(List<Address> addresses, ShoppingCart shoppingCart, List<ShippingAlternative> shippingAlternatives, int x, int y, int width, int height) : base(x, y, width, height)
     {
         Addresses = addresses;
         ShoppingCart = shoppingCart;
+        ShippingAlternatives = shippingAlternatives;
     }
     public override ChangePageRequest? ChangePage()
     {
-        if (Step == 7)
+        switch (Step)
         {
-            return new ChangePageRequest() { Page = "user-address", Action = RequestAction.Post, Query = SelectedAddress };
+            case 7:
+                ShouldChangePage = false;
+                return new ChangePageRequest() { Page = "user-address", Action = RequestAction.Post, Query = SelectedAddress };
+            
         }
-        else if (Step == 8)
-        {
-            return new ChangePageRequest() { Page = "checkout" };
-        }
+
         return null;
     }
 
@@ -57,41 +60,11 @@ internal class CheckoutPage : Page
                 Console.Write("Lägg till land: ");
                 break;
             case 7:
-                Console.WriteLine("Adress tillagd!");
+                ShowShippingAlternatives();
+                break;
+            case 8:
                 break;
         }
-
-    }
-
-    private void ShowAddresses()
-    {
-        int nextX = X;
-        int nextY = Y;
-        for (int i = 0; i < Addresses.Count; i++)
-        {
-            List<string> adresses = new List<string>()
-            {
-                (i+1).ToString(),
-                "Gata: " + Addresses[i].Street.ToString() + " " + Addresses[i].StreetNumber.ToString(),
-                "Postnummer: " + Addresses[i].ZipCode.ToString(),
-                "Stad: " + Addresses[i].City.ToString(),
-                "Land: " + Addresses[i].Country.Name.ToString(),
-            };
-            Window productWindow = new("", nextX, nextY, adresses);
-
-            if (nextX + productWindow.WindowWidth > Width)
-            {
-                nextX = 0;
-                productWindow.Left = nextX;
-                nextY += 5;
-                productWindow.Top = nextY;
-            }
-
-            productWindow.Draw();
-            nextX += productWindow.WindowWidth + 2;
-        }
-        Console.WriteLine("Tryck N för att lägga till en ny adress");
-        Console.Write("Tryck en siffra för att välja adress: ");
     }
 
     public override void HandleInput()
@@ -138,13 +111,83 @@ internal class CheckoutPage : Page
                 Step++;
                 break;
             case 7:
-                Console.ReadKey();
-                ShouldChangePage = true;
+
+                if (int.TryParse(Console.ReadKey().KeyChar.ToString(), out int shippingAlternativeId))
+                {
+                    shippingAlternativeId -= 1;
+                    if (shippingAlternativeId < ShippingAlternatives.Count && ShippingAlternatives.Count >= 0)
+                    {
+                        SelectedShippingAlternative = ShippingAlternatives[shippingAlternativeId];
+                    }
+                }
                 Step++;
+                break;
+            case 8:
+                Console.ReadKey();
                 break;
         }
 
     }
+    private void ShowAddresses()
+    {
+        int nextX = X;
+        int nextY = Y;
+        for (int i = 0; i < Addresses.Count; i++)
+        {
+            List<string> adresses = new List<string>()
+            {
+                (i+1).ToString(),
+                "Gata: " + Addresses[i].Street.ToString() + " " + Addresses[i].StreetNumber.ToString(),
+                "Postnummer: " + Addresses[i].ZipCode.ToString(),
+                "Stad: " + Addresses[i].City.ToString(),
+                "Land: " + Addresses[i].Country.Name.ToString(),
+            };
+            Window productWindow = new("", nextX, nextY, adresses);
 
+            if (nextX + productWindow.WindowWidth > Width)
+            {
+                nextX = 0;
+                productWindow.Left = nextX;
+                nextY += 5;
+                productWindow.Top = nextY;
+            }
+
+            productWindow.Draw();
+            nextX += productWindow.WindowWidth + 2;
+        }
+        Console.WriteLine("Tryck N för att lägga till en ny adress");
+        Console.Write("Tryck en siffra för att välja adress: ");
+    }
+    private void ShowShippingAlternatives()
+    {
+        int nextX = X;
+        int nextY = Y;
+        int i = 1;
+
+        foreach (var shippingAlternative in ShippingAlternatives)
+        {
+            List<string> shippingInfo = new List<string>()
+            {
+                i.ToString(),
+                shippingAlternative.Name,
+                "Pris: " + shippingAlternative.Price
+            };
+
+            Window shippingWindow = new Window("", nextX, nextY, shippingInfo);
+
+            if (nextX + shippingWindow.WindowWidth > Width)
+            {
+                nextX = 0;
+                shippingWindow.Left = nextX;
+                nextY += 5;
+                shippingWindow.Top = nextY;
+            }
+
+            shippingWindow.Draw();
+            nextX += shippingWindow.WindowWidth + 2;
+            i++;
+        }
+        Console.Write("Välj fraktsätt genom att trycka in en siffra: ");
+    }
 }
 
