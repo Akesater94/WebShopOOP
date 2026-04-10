@@ -14,4 +14,30 @@ public class ProductService(IProductRepository productRepository) : IProductServ
     {
         return await productRepository.GetShowCaseProducts();
     }
+
+    public async Task<List<Product>> GetProductsWithDetailsAsync()
+    {
+        return await productRepository.GetProductsWithDetailsAsync();
+    }
+
+    public async Task<Product?> GetProductByIdWithDetailsAsync(int id)
+    {
+        return await productRepository.GetProductByIdWithDetailsAsync(id);
+    }
+
+    public async Task UpdateAsync(Product product)
+    {
+        try
+        {
+            await productRepository.UpdateAsync(product);
+        }
+        catch
+        {
+
+        }
+    }
+    public async Task RemoveAsync(Product product)
+    {
+        await productRepository.RemoveAsync(product);
+    }
 }

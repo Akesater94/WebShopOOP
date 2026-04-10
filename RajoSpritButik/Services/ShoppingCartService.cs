@@ -7,7 +7,7 @@ public class ShoppingCartService(IShoppingCartRepository shoppingCartRepository)
 {
     public async Task AddRowAsync(int shoppingCartId, int productId)
     {
-        await shoppingCartRepository.AddRowAsync(shoppingCartId, productId);      
+        await shoppingCartRepository.AddRowAsync(shoppingCartId, productId);
     }
 
     public async Task<ShoppingCart?> GetByUserIdAsync(int id)
