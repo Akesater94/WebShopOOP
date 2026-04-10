@@ -1,8 +1,4 @@
 ﻿using Entities.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace RajoSpritButik.Pages;
 
@@ -14,14 +10,17 @@ internal class CheckoutPage : Page
     public List<Address> Addresses { get; set; }
     public ShippingAlternative SelectedShippingAlternative { get; set; }
     public List<ShippingAlternative> ShippingAlternatives { get; set; }
+    public List<PaymentAlternative> PaymentAlternatives { get; set; }
+    public PaymentAlternative SelectedPaymentAlternative { get; set; }
     public Address SelectedAddress { get; set; } = null!;
     public int Step { get; set; } = 1;
 
-    public CheckoutPage(List<Address> addresses, ShoppingCart shoppingCart, List<ShippingAlternative> shippingAlternatives, int x, int y, int width, int height) : base(x, y, width, height)
+    public CheckoutPage(List<Address> addresses, ShoppingCart shoppingCart, List<ShippingAlternative> shippingAlternatives, List<PaymentAlternative> paymentAlternatives, int x, int y, int width, int height) : base(x, y, width, height)
     {
         Addresses = addresses;
         ShoppingCart = shoppingCart;
         ShippingAlternatives = shippingAlternatives;
+        PaymentAlternatives = paymentAlternatives;
     }
     public override ChangePageRequest? ChangePage()
     {
@@ -30,7 +29,6 @@ internal class CheckoutPage : Page
             case 7:
                 ShouldChangePage = false;
                 return new ChangePageRequest() { Page = "user-address", Action = RequestAction.Post, Query = SelectedAddress };
-            
         }
 
         return null;
@@ -63,6 +61,7 @@ internal class CheckoutPage : Page
                 ShowShippingAlternatives();
                 break;
             case 8:
+                ShowPaymentAlternatives();
                 break;
         }
     }
@@ -123,6 +122,17 @@ internal class CheckoutPage : Page
                 Step++;
                 break;
             case 8:
+                if (int.TryParse(Console.ReadKey().KeyChar.ToString(), out int paymentAlternativeId))
+                {
+                    paymentAlternativeId -= 1;
+                    if (paymentAlternativeId < PaymentAlternatives.Count && PaymentAlternatives.Count >= 0)
+                    {
+                        SelectedPaymentAlternative = PaymentAlternatives[paymentAlternativeId];
+                    }
+                }
+                Step++;
+                break;
+            case 9:
                 Console.ReadKey();
                 break;
         }
@@ -188,6 +198,39 @@ internal class CheckoutPage : Page
             i++;
         }
         Console.Write("Välj fraktsätt genom att trycka in en siffra: ");
+    }
+
+    private void ShowPaymentAlternatives()
+    {
+        int nextX = X;
+        int nextY = Y;
+        int i = 1;
+
+        foreach (var paymentAlternative in PaymentAlternatives)
+        {
+            List<string> paymentInfo = new List<string>()
+            {
+                i.ToString(),
+                paymentAlternative.Name,
+                "Avgift: " + paymentAlternative.Fee
+            };
+
+            Window paymentWindow = new Window("", nextX, nextY, paymentInfo);
+
+            if (nextX + paymentWindow.WindowWidth > Width)
+            {
+                nextX = 0;
+                paymentWindow.Left = nextX;
+                nextY += 5;
+                paymentWindow.Top = nextY;
+            }
+
+            paymentWindow.Draw();
+            nextX += paymentWindow.WindowWidth + 2;
+            i++;
+        }
+
+        Console.Write("Välj betalningsmetod genom att trycka in en siffra: ");
     }
 }
 
