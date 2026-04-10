@@ -20,6 +20,8 @@ internal class App
     public ICountryService CountryService { get; set; }
     public IUserService UserService { get; set; }
     public IUserAddressService UserAddressService { get; set; }
+    public IPaymentAlternativeService PaymentAlternativeService { get; set; }
+
     User? User { get; set; }
     bool LoggedIn => User != null;
     public App()
@@ -33,6 +35,7 @@ internal class App
         CountryService = new CountryService(new CountryRepository(Context));
         AddressService = new AddressService(new AddressRepository(Context), CountryService);
         ShippingAlternativeService = new ShippingAlternativeService(new ShippingAlternativeRepository(Context));
+        PaymentAlternativeService = new PaymentAlternativeService(new PaymentAlternativeRepository(Context));
     }
     public async Task Run()
     {
@@ -77,6 +80,7 @@ internal class App
         CountryService = new CountryService(new CountryRepository(Context));
         AddressService = new AddressService(new AddressRepository(Context), CountryService);
         ShippingAlternativeService = new ShippingAlternativeService(new ShippingAlternativeRepository(Context));
+        PaymentAlternativeService = new PaymentAlternativeService(new PaymentAlternativeRepository(Context));
 
         switch (request.Page)
         {
@@ -180,7 +184,10 @@ internal class App
                         List<Address> addresses = await UserService.GetAllAddressesAsync(User.Id);
                         ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
                         List<ShippingAlternative> shippingAlternatives = await ShippingAlternativeService.GetAllShippingAlternativesAsync();
-                        Page = new CheckoutPage(addresses, shoppingCart, shippingAlternatives, 0, 10, Console.WindowWidth - 30, 100);
+
+                        List<PaymentAlternative> paymentAlternatives = await PaymentAlternativeService.GetAllPaymentAlternativesAsync();
+
+                        Page = new CheckoutPage(addresses, shoppingCart, shippingAlternatives, paymentAlternatives, 0, 10, Console.WindowWidth - 30, 100);
                     }
                     break;
                 }
