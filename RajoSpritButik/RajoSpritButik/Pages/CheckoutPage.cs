@@ -8,22 +8,29 @@ namespace RajoSpritButik.Pages;
 
 internal class CheckoutPage : Page
 {
-    public List<Product> Products { get; set; } = [];
-    public bool AddMode { get; set; }
+    public ShoppingCart ShoppingCart { get; set; }
 
     public char? SelectedItem = null;
     public List<Address> Addresses { get; set; }
-    public Address SelectedAddress { get; set; }
-    public int Step { get; set; }
+    public Address SelectedAddress { get; set; } = null!;
+    public int Step { get; set; } = 1;
 
-    public CheckoutPage(List<Product> products, int x, int y, int width, int height, List<Address> addresses) : base(x, y, width, height)
+    public CheckoutPage(List<Address> addresses, ShoppingCart shoppingCart, int x, int y, int width, int height) : base(x, y, width, height)
     {
-        Products = products;
         Addresses = addresses;
+        ShoppingCart = shoppingCart;
     }
     public override ChangePageRequest? ChangePage()
     {
-        throw new NotImplementedException();
+        if (Step == 7)
+        {
+            return new ChangePageRequest() { Page = "user-address", Action = RequestAction.Post, Query = SelectedAddress };
+        }
+        else if (Step == 8)
+        {
+            return new ChangePageRequest() { Page = "checkout" };
+        }
+        return null;
     }
 
     public override void Draw()
@@ -31,27 +38,29 @@ internal class CheckoutPage : Page
         switch (Step)
         {
             case 1:
-                if (AddMode)
-                {
-                    AddNewAddress();
-                }
-                else
-                {
-                    ShowAddresses();
-                }
+                ShowAddresses();
                 break;
 
             case 2:
+                Console.Write("Lägg till gata: ");
+                break;
+            case 3:
+                Console.Write("Lägg till gatunummer: ");
+                break;
+            case 4:
+                Console.Write("Lägg till postnummer: ");
+                break;
+            case 5:
+                Console.Write("Lägg till stad: ");
+                break;
+            case 6:
+                Console.Write("Lägg till land: ");
+                break;
+            case 7:
+                Console.WriteLine("Adress tillagd!");
                 break;
         }
-        //if (AddMode)
-        //{
 
-        //}
-        //else
-        //{
-        //ShowAddresses();
-        //}
     }
 
     private void ShowAddresses()
@@ -63,7 +72,7 @@ internal class CheckoutPage : Page
             List<string> adresses = new List<string>()
             {
                 (i+1).ToString(),
-                "Gata: " + Addresses[i].Street.ToString() + Addresses[i].StreetNumber.ToString(),
+                "Gata: " + Addresses[i].Street.ToString() + " " + Addresses[i].StreetNumber.ToString(),
                 "Postnummer: " + Addresses[i].ZipCode.ToString(),
                 "Stad: " + Addresses[i].City.ToString(),
                 "Land: " + Addresses[i].Country.Name.ToString(),
@@ -90,33 +99,52 @@ internal class CheckoutPage : Page
         switch (Step)
         {
             case 1:
-                if (!AddMode)
+                var key = Console.ReadKey().KeyChar;
+                if (int.TryParse(key.ToString(), out int addressId))
                 {
-                    var key = Console.ReadKey().KeyChar;
-                    if (int.TryParse(key.ToString(), out int addressId))
+                    addressId -= 1;
+                    if (addressId <= Addresses.Count && addressId >= 0)
                     {
-                        addressId -= 1;
-                        if (addressId <= Addresses.Count && addressId >= 0)
-                        {
-                            Step++;
-                            SelectedAddress = Addresses[addressId];
-                        }
+                        Step = 7;
+                        SelectedAddress = Addresses[addressId];
                     }
-
                 }
-                else
+                else if (key == 'n' || key == 'N')
                 {
-                    var key = Console.ReadKey().KeyChar;
-                    
+                    Step++;
+                    SelectedAddress = new Address();
                 }
-                    break;
+                break;
+            case 2:
+                SelectedAddress.Street = Console.ReadLine();
+                Step++;
+                break;
+            case 3:
+                SelectedAddress.StreetNumber = Console.ReadLine();
+                Step++;
+                break;
+            case 4:
+                SelectedAddress.ZipCode = Console.ReadLine();
+                Step++;
+                break;
+            case 5:
+                SelectedAddress.City = Console.ReadLine();
+                Step++;
+                break;
+            case 6:
+                SelectedAddress.Country = new Country();
+                SelectedAddress.Country.Name = Console.ReadLine();
+                ShouldChangePage = true;
+                Step++;
+                break;
+            case 7:
+                Console.ReadKey();
+                ShouldChangePage = true;
+                Step++;
+                break;
         }
 
     }
-    public void AddNewAddress()
-    {
-        
-    }
-    
+
 }
 

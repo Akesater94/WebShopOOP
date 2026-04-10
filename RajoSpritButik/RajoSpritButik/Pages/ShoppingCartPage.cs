@@ -27,6 +27,8 @@ internal class ShoppingCartPage : Page
         {
             case 'c':
                 return new ChangePageRequest() { Page = "menu" };
+            case 'x':
+                return new ChangePageRequest() { Page = "checkout" };
             default:
                 return null;
         }
@@ -63,6 +65,7 @@ internal class ShoppingCartPage : Page
         {
             Console.WriteLine("Tryck D för att kunna välja produkt att ta bort.");
             Console.WriteLine("Tryck C för att gå tillbaka till menyn.");
+            Console.WriteLine("Tryck X för att gå till betalning.");
         }
         else
         {
@@ -95,6 +98,9 @@ internal class ShoppingCartPage : Page
                     break;
                 case 'c':
                     ShouldChangePage = true;
+                    break;
+                case 'x':
+                    ShouldChangePage= true;
                     break;
                 default:
                     ShouldChangePage = false;
