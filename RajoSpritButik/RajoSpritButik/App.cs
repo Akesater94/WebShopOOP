@@ -4,38 +4,16 @@ using Entities.Models;
 using RajoSpritButik.AdminPages;
 using RajoSpritButik.Pages;
 using Services;
-using Services.Interfaces;
 
 namespace RajoSpritButik;
 
 internal class App
 {
     public Page Page { get; set; } = null!;
-    public RajoDbContext Context { get; set; }
-    public IProductService ProductService { get; set; }
-    public IShippingAlternativeService ShippingAlternativeService { get; set; }
-    public ICategoryService CategoryService { get; set; }
-    public IAddressService AddressService { get; set; }
-    public IShoppingCartService ShoppingCartService { get; set; }
-    public ICountryService CountryService { get; set; }
-    public IUserService UserService { get; set; }
-    public IUserAddressService UserAddressService { get; set; }
-    public IPaymentAlternativeService PaymentAlternativeService { get; set; }
-
     User? User { get; set; }
     bool LoggedIn => User != null;
     public App()
     {
-        Context = new();
-        ProductService = new ProductService(new ProductRepository(Context));
-        CategoryService = new CategoryService(new CategoryRepository(Context));
-        ShoppingCartService = new ShoppingCartService(new ShoppingCartRepository(Context));
-        UserAddressService = new UserAddressService(new UserAddressRepository(Context));
-        UserService = new UserService(new UserRepository(Context), UserAddressService);
-        CountryService = new CountryService(new CountryRepository(Context));
-        AddressService = new AddressService(new AddressRepository(Context), CountryService);
-        ShippingAlternativeService = new ShippingAlternativeService(new ShippingAlternativeRepository(Context));
-        PaymentAlternativeService = new PaymentAlternativeService(new PaymentAlternativeRepository(Context));
     }
     public async Task Run()
     {
@@ -75,21 +53,21 @@ internal class App
 
     public async Task ChangePage(ChangePageRequest request)
     {
-        Context = new();
-        ProductService = new ProductService(new ProductRepository(Context));
-        CategoryService = new CategoryService(new CategoryRepository(Context));
-        ShoppingCartService = new ShoppingCartService(new ShoppingCartRepository(Context));
-        UserAddressService = new UserAddressService(new UserAddressRepository(Context));
-        UserService = new UserService(new UserRepository(Context), UserAddressService);
-        CountryService = new CountryService(new CountryRepository(Context));
-        AddressService = new AddressService(new AddressRepository(Context), CountryService);
-        ShippingAlternativeService = new ShippingAlternativeService(new ShippingAlternativeRepository(Context));
-        PaymentAlternativeService = new PaymentAlternativeService(new PaymentAlternativeRepository(Context));
+        using RajoDbContext context = new();
+        ProductService productService = new ProductService(new ProductRepository(context));
+        CategoryService categoryService = new CategoryService(new CategoryRepository(context));
+        ShoppingCartService shoppingCartService = new ShoppingCartService(new ShoppingCartRepository(context));
+        UserAddressService userAddressService = new UserAddressService(new UserAddressRepository(context));
+        UserService userService = new UserService(new UserRepository(context), userAddressService);
+        CountryService countryService = new CountryService(new CountryRepository(context));
+        AddressService addressService = new AddressService(new AddressRepository(context), countryService);
+        ShippingAlternativeService shippingAlternativeService = new ShippingAlternativeService(new ShippingAlternativeRepository(context));
+        PaymentAlternativeService paymentAlternativeService = new PaymentAlternativeService(new PaymentAlternativeRepository(context));
 
         switch (request.Page)
         {
             case "welcome":
-                List<Product> showcaseProducts = await ProductService.GetShowCaseProductsAsync();
+                List<Product> showcaseProducts = await productService.GetShowCaseProductsAsync();
                 Page = new WelcomePage(showcaseProducts);
                 break;
 
@@ -101,7 +79,7 @@ internal class App
                 switch (request.Action)
                 {
                     case RequestAction.Get:
-                        List<Category> categories = await CategoryService.GetAllCategoriesAsync();
+                        List<Category> categories = await categoryService.GetAllCategoriesAsync();
                         Page = new CategoriesPage(categories);
                         break;
                 }
@@ -113,7 +91,7 @@ internal class App
                     case RequestAction.Get:
                         if (request.Query is int id)
                         {
-                            List<Product> productsByCategory = await ProductService.GetAllProductsByCategoryAsync(id);
+                            List<Product> productsByCategory = await productService.GetAllProductsByCategoryAsync(id);
                             Page = new CategoryPage(productsByCategory);
                         }
                         break;
@@ -126,7 +104,7 @@ internal class App
                         {
                             if (request.Query is Product product)
                             {
-                                await ProductService.UpdateAsync(product);
+                                await productService.UpdateAsync(product);
                                 await ChangePage(new() { Page = "update-product", Query = product.Id, Action = RequestAction.Get });
                             }
                         }
@@ -135,7 +113,7 @@ internal class App
                         {
                             if (request.Query is Product product)
                             {
-                                await ProductService.UpdateAsync(product);
+                                await productService.UpdateAsync(product);
                                 await ChangePage(new() { Page = "manage-products" });
                             }
                         }
@@ -144,9 +122,9 @@ internal class App
                         {
                             if (request.Query is int id)
                             {
-                                if (await ProductService.GetProductByIdWithDetailsAsync(id) is Product product)
+                                if (await productService.GetProductByIdWithDetailsAsync(id) is Product product)
                                 {
-                                    await ProductService.RemoveAsync(product);
+                                    await productService.RemoveAsync(product);
                                 }
                                 await ChangePage(new() { Page = "manage-products" });
                             }
@@ -160,8 +138,8 @@ internal class App
                     case RequestAction.Post:
                         if (request.Query is Address address)
                         {
-                            await AddressService.AddAddressAsync(address);
-                            await UserAddressService.AddUserAddressAsync(User.Id, address.Id);
+                            await addressService.AddAddressAsync(address);
+                            await userAddressService.AddUserAddressAsync(User.Id, address.Id);
                         }
                         break;
                 }
@@ -174,7 +152,7 @@ internal class App
                         ShoppingCart? shoppingCart = null;
                         if (User != null)
                         {
-                            shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
+                            shoppingCart = await shoppingCartService.GetByUserIdAsync(User.Id);
                         }
                         Page = new ShoppingCartPage(shoppingCart);
                         break;
@@ -185,11 +163,10 @@ internal class App
                 {
                     if (User != null)
                     {
-                        List<Address> addresses = await UserService.GetAllAddressesAsync(User.Id);
-                        ShoppingCart? shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
-                        List<ShippingAlternative> shippingAlternatives = await ShippingAlternativeService.GetAllShippingAlternativesAsync();
-
-                        List<PaymentAlternative> paymentAlternatives = await PaymentAlternativeService.GetAllPaymentAlternativesAsync();
+                        List<Address> addresses = await userService.GetAllAddressesAsync(User.Id);
+                        ShoppingCart? shoppingCart = await shoppingCartService.GetByUserIdAsync(User.Id);
+                        List<ShippingAlternative> shippingAlternatives = await shippingAlternativeService.GetAllShippingAlternativesAsync();
+                        List<PaymentAlternative> paymentAlternatives = await paymentAlternativeService.GetAllPaymentAlternativesAsync();
 
                         Page = new CheckoutPage(addresses, shoppingCart, shippingAlternatives, paymentAlternatives);
                     }
@@ -201,12 +178,12 @@ internal class App
                     case RequestAction.Delete:
                         if (request.Query is int id)
                         {
-                            await ShoppingCartService.RemoveRowAsync(id);
+                            await shoppingCartService.RemoveRowAsync(id);
                         }
                         ShoppingCart? shoppingCart = null;
                         if (User != null)
                         {
-                            shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
+                            shoppingCart = await shoppingCartService.GetByUserIdAsync(User.Id);
                         }
                         Page = new ShoppingCartPage(shoppingCart);
                         break;
@@ -218,9 +195,9 @@ internal class App
                             shoppingCart = null;
                             if (User != null)
                             {
-                                shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
+                                shoppingCart = await shoppingCartService.GetByUserIdAsync(User.Id);
                             }
-                            await ShoppingCartService.AddRowAsync(shoppingCart.Id, productId);
+                            await shoppingCartService.AddRowAsync(shoppingCart.Id, productId);
                         }
                         break;
                 }
@@ -234,7 +211,7 @@ internal class App
                     case RequestAction.Post:
                         if (request.Query is string userName)
                         {
-                            User = await UserService.GetUserByUserNameAsync(userName);
+                            User = await userService.GetUserByUserNameAsync(userName);
                         }
                         Page = new MenuPage(User);
                         break;
@@ -263,14 +240,14 @@ internal class App
                 }
                 break;
             case "manage-products":
-                List<Product> products = await ProductService.GetProductsWithDetailsAsync();
+                List<Product> products = await productService.GetProductsWithDetailsAsync();
                 Page = new ManageProductsPage(products);
                 break;
             case "update-product":
                 {
                     if (request.Query is int id)
                     {
-                        Product? product = await ProductService.GetProductByIdWithDetailsAsync(id);
+                        Product? product = await productService.GetProductByIdWithDetailsAsync(id);
                         if (product != null)
                         {
                             Page = new UpdateProductPage(product);
