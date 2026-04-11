@@ -7,9 +7,9 @@ internal class ShoppingCartPage : Page
     ShoppingCart? ShoppingCart { get; set; }
     List<ShoppingCartRow> ShoppingCartRows { get; set; } = new();
     public char? SelectedItem { get; set; }
-    public ShoppingCartRow SelectedRow { get; set; }
+    public ShoppingCartRow SelectedRow { get; set; } = null!;
     public bool deleteMode { get; set; }
-    public ShoppingCartPage(ShoppingCart? shoppingCart, int x, int y, int width, int height) : base(x, y, width, height)
+    public ShoppingCartPage(ShoppingCart? shoppingCart)
     {
         ShoppingCart = shoppingCart;
         if (shoppingCart != null)
@@ -100,7 +100,7 @@ internal class ShoppingCartPage : Page
                     ShouldChangePage = true;
                     break;
                 case 'x':
-                    ShouldChangePage= true;
+                    ShouldChangePage = true;
                     break;
                 default:
                     ShouldChangePage = false;

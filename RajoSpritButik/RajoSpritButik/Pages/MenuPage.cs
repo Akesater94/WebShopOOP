@@ -6,7 +6,7 @@ namespace RajoSpritButik.Pages
     {
         public char? SelectedItem { get; set; }
         public User? User { get; set; }
-        public MenuPage(User? user, int x, int y, int width, int height) : base(x, y, width, height)
+        public MenuPage(User? user)
         {
             User = user;
         }

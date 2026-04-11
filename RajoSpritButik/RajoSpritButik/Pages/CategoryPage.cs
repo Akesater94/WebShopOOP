@@ -7,10 +7,10 @@ internal class CategoryPage : Page
     public char? SelectedItem { get; set; }
     public List<Product> Products { get; set; } = [];
     public bool AddMode { get; set; }
-    public Product SelectedProduct { get; set; }
+    public Product SelectedProduct { get; set; } = null!;
     public bool SelectMode { get; set; }
 
-    public CategoryPage(List<Product> products, int x, int y, int width, int height) : base(x, y, width, height)
+    public CategoryPage(List<Product> products)
     {
         Products = products;
     }

@@ -10,7 +10,7 @@ internal class UpdateProductPage : Page
 
     public Product Product { get; set; }
 
-    public UpdateProductPage(Product product, int x, int y, int width, int height) : base(x, y, width, height)
+    public UpdateProductPage(Product product)
     {
         Product = product;
     }

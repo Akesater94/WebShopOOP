@@ -42,7 +42,11 @@ internal class App
         await ChangePage(new ChangePageRequest { Page = "menu" });
         while (true)
         {
+            Page.X = 0;
+            Page.Y = 10;
             Page.Width = Console.WindowWidth - 30;
+            Page.Height = 40;
+
             Console.Clear();
             DrawHeader();
             Page.Draw();
@@ -86,11 +90,11 @@ internal class App
         {
             case "welcome":
                 List<Product> showcaseProducts = await ProductService.GetShowCaseProductsAsync();
-                Page = new WelcomePage(showcaseProducts, 0, 10, Console.WindowWidth - 30, 40);
+                Page = new WelcomePage(showcaseProducts);
                 break;
 
             case "menu":
-                Page = new MenuPage(User, 0, 10, Console.WindowWidth - 30, 40);
+                Page = new MenuPage(User);
                 break;
 
             case "categories":
@@ -98,7 +102,7 @@ internal class App
                 {
                     case RequestAction.Get:
                         List<Category> categories = await CategoryService.GetAllCategoriesAsync();
-                        Page = new CategoriesPage(categories, 0, 10, Console.WindowWidth - 30, 40);
+                        Page = new CategoriesPage(categories);
                         break;
                 }
                 break;
@@ -110,7 +114,7 @@ internal class App
                         if (request.Query is int id)
                         {
                             List<Product> productsByCategory = await ProductService.GetAllProductsByCategoryAsync(id);
-                            Page = new CategoryPage(productsByCategory, 0, 10, Console.WindowWidth - 30, 40);
+                            Page = new CategoryPage(productsByCategory);
                         }
                         break;
                 }
@@ -172,7 +176,7 @@ internal class App
                         {
                             shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
                         }
-                        Page = new ShoppingCartPage(shoppingCart, 0, 10, Console.WindowWidth - 30, 100);
+                        Page = new ShoppingCartPage(shoppingCart);
                         break;
                 }
                 break;
@@ -187,7 +191,7 @@ internal class App
 
                         List<PaymentAlternative> paymentAlternatives = await PaymentAlternativeService.GetAllPaymentAlternativesAsync();
 
-                        Page = new CheckoutPage(addresses, shoppingCart, shippingAlternatives, paymentAlternatives, 0, 10, Console.WindowWidth - 30, 100);
+                        Page = new CheckoutPage(addresses, shoppingCart, shippingAlternatives, paymentAlternatives);
                     }
                     break;
                 }
@@ -204,7 +208,7 @@ internal class App
                         {
                             shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
                         }
-                        Page = new ShoppingCartPage(shoppingCart, 0, 10, Console.WindowWidth - 30, 100);
+                        Page = new ShoppingCartPage(shoppingCart);
                         break;
 
                     case RequestAction.Post:
@@ -216,7 +220,6 @@ internal class App
                             {
                                 shoppingCart = await ShoppingCartService.GetByUserIdAsync(User.Id);
                             }
-
                             await ShoppingCartService.AddRowAsync(shoppingCart.Id, productId);
                         }
                         break;
@@ -226,14 +229,14 @@ internal class App
                 switch (request.Action)
                 {
                     case RequestAction.Get:
-                        Page = new LoginPage(0, 10, Console.WindowWidth - 30, 40);
+                        Page = new LoginPage();
                         break;
                     case RequestAction.Post:
                         if (request.Query is string userName)
                         {
                             User = await UserService.GetUserByUserNameAsync(userName);
                         }
-                        Page = new MenuPage(User, 0, 10, Console.WindowWidth - 30, 40);
+                        Page = new MenuPage(User);
                         break;
                 }
                 break;
@@ -241,27 +244,27 @@ internal class App
                 switch (request.Action)
                 {
                     case RequestAction.Get:
-                        Page = new LogoutPage(0, 10, Console.WindowWidth - 30, 40);
+                        Page = new LogoutPage();
                         break;
                     case RequestAction.Post:
                         User = null;
-                        Page = new MenuPage(User, 0, 10, Console.WindowWidth - 30, 40);
+                        Page = new MenuPage(User);
                         break;
                 }
                 break;
             case "admin-menu":
                 if (User?.Role.Name == "Admin")
                 {
-                    Page = new AdminMenuPage(0, 10, Console.WindowWidth - 30, 40);
+                    Page = new AdminMenuPage();
                 }
                 else
                 {
-                    Page = new MenuPage(User, 0, 10, Console.WindowWidth - 30, 40);
+                    Page = new MenuPage(User);
                 }
                 break;
             case "manage-products":
                 List<Product> products = await ProductService.GetProductsWithDetailsAsync();
-                Page = new ManageProductsPage(products, 0, 10, Console.WindowWidth - 30, 40);
+                Page = new ManageProductsPage(products);
                 break;
             case "update-product":
                 {
@@ -270,7 +273,7 @@ internal class App
                         Product? product = await ProductService.GetProductByIdWithDetailsAsync(id);
                         if (product != null)
                         {
-                            Page = new UpdateProductPage(product, 0, 10, Console.WindowWidth - 30, 40);
+                            Page = new UpdateProductPage(product);
                         }
                         else
                         {
@@ -280,7 +283,7 @@ internal class App
                 }
                 break;
             case "create-product":
-                Page = new CreateProductPage(0, 10, Console.WindowWidth - 30, 40);
+                Page = new CreateProductPage();
                 break;
 
             default:

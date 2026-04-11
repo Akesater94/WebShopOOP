@@ -8,14 +8,14 @@ internal class CheckoutPage : Page
 
     public char? SelectedItem = null;
     public List<Address> Addresses { get; set; }
-    public ShippingAlternative SelectedShippingAlternative { get; set; }
+    public ShippingAlternative SelectedShippingAlternative { get; set; } = null!;
     public List<ShippingAlternative> ShippingAlternatives { get; set; }
     public List<PaymentAlternative> PaymentAlternatives { get; set; }
-    public PaymentAlternative SelectedPaymentAlternative { get; set; }
+    public PaymentAlternative SelectedPaymentAlternative { get; set; } = null!;
     public Address SelectedAddress { get; set; } = null!;
     public int Step { get; set; } = 1;
 
-    public CheckoutPage(List<Address> addresses, ShoppingCart shoppingCart, List<ShippingAlternative> shippingAlternatives, List<PaymentAlternative> paymentAlternatives, int x, int y, int width, int height) : base(x, y, width, height)
+    public CheckoutPage(List<Address> addresses, ShoppingCart shoppingCart, List<ShippingAlternative> shippingAlternatives, List<PaymentAlternative> paymentAlternatives)
     {
         Addresses = addresses;
         ShoppingCart = shoppingCart;

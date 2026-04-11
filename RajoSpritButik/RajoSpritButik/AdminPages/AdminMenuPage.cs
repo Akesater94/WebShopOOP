@@ -2,7 +2,7 @@
 
 internal class AdminMenuPage : Page
 {
-    public AdminMenuPage(int x, int y, int width, int height) : base(x, y, width, height)
+    public AdminMenuPage()
     {
     }
 

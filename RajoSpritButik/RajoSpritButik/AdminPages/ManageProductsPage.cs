@@ -12,7 +12,7 @@ internal class ManageProductsPage : Page
     public char Input { get; set; }
     public bool CreateMode { get; private set; }
 
-    public ManageProductsPage(List<Product> products, int x, int y, int width, int height) : base(x, y, width, height)
+    public ManageProductsPage(List<Product> products)
     {
         Products = products;
     }
