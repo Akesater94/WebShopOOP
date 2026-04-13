@@ -18,10 +18,13 @@ internal class App
     public async Task Run()
     {
         await ChangePage(new ChangePageRequest { Page = "menu" });
+
+        Console.BufferHeight = 100;
+
         while (true)
         {
             Page.X = 0;
-            Page.Y = 10;
+            Page.Y = 6;
             Page.Width = Console.WindowWidth - 30;
             Page.Height = 40;
 
@@ -185,7 +188,9 @@ internal class App
 
                             if (request.Query is (int adressId, int paymentId, int shippingId, int shoppingCartId))
                             {
-                                Order order = await orderService.AddOrderAsync(User.Id, adressId, paymentId, shippingId, shoppingCartId);
+                                Order? order = await orderService.AddOrderAsync(User.Id, adressId, paymentId, shippingId, shoppingCartId);
+
+                                Page = new OrderConfirmationPage(order!);
                             }
                         }
                         break;

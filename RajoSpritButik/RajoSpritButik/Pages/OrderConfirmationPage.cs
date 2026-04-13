@@ -1,7 +1,5 @@
 ﻿using Entities.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using RajoSpritButik.UIComponents;
 
 namespace RajoSpritButik.Pages;
 
@@ -16,6 +14,7 @@ internal class OrderConfirmationPage : Page
 
     public override ChangePageRequest? ChangePage()
     {
+        return new ChangePageRequest() { Page = "menu" };
     }
 
     public override void Draw()
@@ -26,24 +25,35 @@ internal class OrderConfirmationPage : Page
             " ",
         };
 
-        foreach (var orderRow in Order.OrderRows)
-        {
-            Product product = orderRow.Product;
-            orderInfo.Add($"{orderRow.Quantity}st {product.Name} á {product.Price}kr.");
-            orderInfo.Add($"Totalt: {product.Price * orderRow.Quantity}kr");
-
-        }
-
-
         orderInfo.Add($"Du har valt att få dina varor genom {Order.ShippingAlternative.Name} till: ");
         orderInfo.Add($"{Order.Address.Street} {Order.Address.StreetNumber}");
         orderInfo.Add($"{Order.Address.ZipCode} {Order.Address.City}");
         orderInfo.Add($"{Order.Address.Country.Name}");
 
+        Window orderConfirmationWindow = new Window("", X, Y, orderInfo);
+        orderConfirmationWindow.Draw();
 
+        Table<OrderRow> orderRowTable = new(
+
+            Order.OrderRows.ToList(),
+            $"Order: {Order.Id}",
+            $"{"#".PadRight(3)}{"Namn".PadRight(15)}{"Antal".PadRight(5)}{"Styckpris".PadRight(10)}{"Totalpris".PadRight(10)}",
+            $"Totalt: {Order.OrderTotal()} kr",
+            (or, i) => $"{(i + 1).ToString().PadRight(3)}{or.Product.Name.PadRight(15)}{or.Quantity.ToString().PadRight(5)}{or.Product.Price.ToString().PadRight(10)}{or.RowTotal.ToString().PadRight(10)}",
+            X + orderConfirmationWindow.WindowWidth + 2,
+            Y
+            );
+
+        orderRowTable.Draw();
+
+        Console.WriteLine("Tryck C för att gå till menyn");
     }
 
     public override void HandleInput()
     {
+        if (Console.ReadKey().Key == ConsoleKey.C)
+        {
+            ShouldChangePage = true;
+        }
     }
 }

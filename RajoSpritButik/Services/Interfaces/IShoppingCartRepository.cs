@@ -9,4 +9,5 @@ public interface IShoppingCartRepository
     Task RemoveRowAsync(int rowId);
     Task AddRowAsync(int shoppingCartId, int productId);
     Task<ShoppingCart?> GetShoppingCartAsync(int shoppingCartId);
+    Task EmptyShoppingCartAsync(int shoppingCartId);
 }

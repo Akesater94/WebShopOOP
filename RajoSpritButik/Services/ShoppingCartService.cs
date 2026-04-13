@@ -12,12 +12,7 @@ public class ShoppingCartService(IShoppingCartRepository shoppingCartRepository)
 
     public async Task EmptyShoppingCartAsync(int shoppingCartId)
     {
-        ShoppingCart shoppingCart = (await GetShoppingCartAsync(shoppingCartId))!;
-
-        foreach (var shoppingCartRow in shoppingCart.ShoppingCartRows)
-        {
-            await RemoveRowAsync(shoppingCartRow.Id);
-        }
+        await shoppingCartRepository.EmptyShoppingCartAsync(shoppingCartId);
     }
 
     public async Task<ShoppingCart?> GetByUserIdAsync(int id)

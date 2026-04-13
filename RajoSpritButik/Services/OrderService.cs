@@ -8,7 +8,7 @@ namespace Services;
 
 public class OrderService(IOrderRepository orderRepository, IShoppingCartService shoppingCartService) : IOrderService
 {
-    public async Task<Order> AddOrderAsync(int userId, int addressId, int paymentAlternativeId, int shippingAlternativeId, int shoppingCartId)
+    public async Task<Order?> AddOrderAsync(int userId, int addressId, int paymentAlternativeId, int shippingAlternativeId, int shoppingCartId)
     {
         Order order = new Order()
         {
@@ -16,21 +16,36 @@ public class OrderService(IOrderRepository orderRepository, IShoppingCartService
             AddressId = addressId,
             PaymentAlternativeId = paymentAlternativeId,
             ShippingAlternativeId = shippingAlternativeId,
-            Status = "Received"
+            Status = "Received",
+            OrderRows = new List<OrderRow>()
         };
 
-        await orderRepository.AddOrderAsync(order);
 
         ShoppingCart shoppingCart = (await shoppingCartService.GetShoppingCartAsync(shoppingCartId))!;
 
         foreach (var shoppingCartRow in shoppingCart.ShoppingCartRows)
         {
-            await AddOrderRowAsync(shoppingCartRow.ProductId, order.Id, shoppingCartRow.Quantity);
+            order.OrderRows.Add(new OrderRow()
+            {
+                ProductId = shoppingCartRow.ProductId,
+                Quantity = shoppingCartRow.Quantity,
+                Product = shoppingCartRow.Product,
+            });
+
         }
 
+        await orderRepository.AddOrderAsync(order);
+
         await shoppingCartService.EmptyShoppingCartAsync(shoppingCartId);
-        return order;
+
+        return await GetOrderWithDetailsAsync(order.Id);
     }
+
+    public async Task<Order?> GetOrderWithDetailsAsync(int orderId)
+    {
+        return await orderRepository.GetOrderWithDetailsAsync(orderId);
+    }
+
 
     public async Task<OrderRow> AddOrderRowAsync(int productId, int orderId, int quantity)
     {

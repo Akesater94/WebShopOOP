@@ -8,5 +8,6 @@
         public int Quantity { get; set; }
         public Product Product { get; set; } = null!;
         public Order Order { get; set; } = null!;
+        public decimal RowTotal => Quantity * Product.Price;
     }
 }
