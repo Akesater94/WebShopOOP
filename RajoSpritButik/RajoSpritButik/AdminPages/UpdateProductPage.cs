@@ -38,7 +38,7 @@ internal class UpdateProductPage : Page
             $"3. Lagersaldo: {Product.Stock}",
             $"4. Tillverkare: {Product.Manufacturer.Name} ({Product.ManufacturerId})",
             $"5. Kategori: {Product.Category.Name} ({Product.CategoryId})",
-            $"6. Beskrivning: EJ KLART!",
+            $"6. Beskrivning: {Product.Description}",
             $"7. Erbjudande: {(Product.Showcase ? "Ja" : "Nej")}"
         };
         Window productWindow = new("Vald produkt", X, Y, productFields);
@@ -53,6 +53,7 @@ internal class UpdateProductPage : Page
                 case '3': Console.Write("Skriv in ett nytt lagersaldo: "); break;
                 case '4': Console.Write("Skriv in ID:t för nya tillverkaren: "); break;
                 case '5': Console.Write("Skriv in ID:t för nya kategorin: "); break;
+                case '6': Console.Write("Skriv in den nya beskrivningen: "); break;
                 case '7': Console.Write("Visa varan på startsidan J/N: "); break;
                 default: break;
             }
@@ -115,6 +116,9 @@ internal class UpdateProductPage : Page
                             Product.CategoryId = categoryId;
                             Product.Category = null!;
                         }
+                        break;
+                    case '6':
+                        Product.Description = input;
                         break;
                     case '7':
                         if (input.ToUpper() == "J")

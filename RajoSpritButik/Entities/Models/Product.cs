@@ -7,6 +7,7 @@
         public decimal Price { get; set; }
         public bool Showcase { get; set; }
         public int Stock { get; set; }
+        public string Description { get; set; } = null!;
         public int CategoryId { get; set; }
         public int ManufacturerId { get; set; }
         public Manufacturer Manufacturer { get; set; } = null!;

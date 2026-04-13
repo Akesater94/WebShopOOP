@@ -15,6 +15,7 @@ internal class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Stock).IsRequired();
         builder.Property(p => p.Showcase).IsRequired();
         builder.Property(p => p.Price).IsRequired();
+        builder.Property(p => p.Description).IsRequired().HasMaxLength(256);
 
         builder.HasOne(p => p.Category).WithMany(c => c.Products);
         builder.HasOne(p => p.Manufacturer).WithMany(m => m.Products);
