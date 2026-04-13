@@ -39,7 +39,8 @@ internal class CreateProductPage : Page
             case 3: Console.Write("3. Skriv in lagersaldo: "); break;
             case 4: Console.Write("4. Skriv in ID för tillverkaren: "); break;
             case 5: Console.Write("5. Skriv in ID för kategorin: "); break;
-            case 6: Console.Write("6. Visa varan på startsidan J/N: "); break;
+            case 6: Console.Write("6. Skriv en beskrivning: "); break;
+            case 7: Console.Write("7. Visa varan på startsidan J/N: "); break;
             default: Console.WriteLine("Sparar produkt..."); break;
         }
     }
@@ -87,6 +88,10 @@ internal class CreateProductPage : Page
                     }
                     break;
                 case 6:
+                    Product.Description = input;
+                    success = true;
+                    break;
+                case 7:
                     if (input.ToUpper() == "J")
                     {
                         Product.Showcase = true;
@@ -103,7 +108,7 @@ internal class CreateProductPage : Page
             if (success)
             {
                 step++;
-                if (step > 6)
+                if (step > 7)
                 {
                     ShouldChangePage = true;
                 }
