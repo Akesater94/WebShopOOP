@@ -23,6 +23,18 @@ internal class CategoryPage : Page
 
             return new ChangePageRequest() { Page = "shopping-cart-row", Action = RequestAction.Post, Query = SelectedProduct.Id };
         }
+        else if (SelectMode)
+        {
+            SelectMode = false;
+
+            return new ChangePageRequest()
+            {
+                Page = "product",
+                Action = RequestAction.Get,
+                Query = SelectedProduct.Id,
+                Redirect = new ChangePageRequest() { Page = "category", Query = SelectedProduct.CategoryId }
+            };
+        }
         else
         {
             if (ShouldChangePage)
@@ -64,21 +76,26 @@ internal class CategoryPage : Page
             nextX += productWindow.WindowWidth + 2;
         }
 
-        if (!AddMode)
+        if (!AddMode && !SelectMode)
         {
             Console.WriteLine("Tryck A för att kunna lägga till produkt i varukorgen.");
             Console.WriteLine("Tryck C för att gå tillbaka till menyn.");
+            Console.WriteLine("Tryck I för att visa mer information om produkterna.");
+
         }
-        else
+        else if (AddMode)
         {
             Console.Write("Välj en produkt att lägga till: ");
         }
-
+        else if (SelectMode)
+        {
+            Console.Write("Välj en produkt att få mer information om: ");
+        }
     }
 
     public override void HandleInput()
     {
-        if (AddMode)
+        if (AddMode || SelectMode)
         {
             var key = Console.ReadKey().KeyChar;
             if (int.TryParse(key.ToString(), out var productId))
@@ -104,7 +121,7 @@ internal class CategoryPage : Page
                     ShouldChangePage = true;
                     break;
 
-                case "S":
+                case "I":
                     SelectMode = true;
                     break;
 

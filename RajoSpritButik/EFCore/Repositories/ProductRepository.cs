@@ -24,11 +24,12 @@ public class ProductRepository(RajoDbContext context) : IProductRepository
             .ToListAsync();
     }
 
-    public async Task<Product?> GetProductByIdWithDetailsAsync(int id)
+    public async Task<Product?> GetProductAsync(int id)
     {
         return await context.Products
             .Include(p => p.Category)
             .Include(p => p.Manufacturer)
+            .ThenInclude(m => m.Country)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 

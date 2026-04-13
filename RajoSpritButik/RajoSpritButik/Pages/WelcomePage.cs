@@ -23,9 +23,21 @@ internal class WelcomePage : Page
 
             return new ChangePageRequest() { Page = "shopping-cart-row", Action = RequestAction.Post, Query = SelectedProduct.Id };
         }
+        else if (SelectMode)
+        {
+            SelectMode = false;
+            
+
+            return new ChangePageRequest()
+            {
+                Page = "product",
+                Action = RequestAction.Get,
+                Query = SelectedProduct.Id,
+                Redirect = new ChangePageRequest() { Page = "welcome" }
+            };
+        }
         else
         {
-
             if (ShouldChangePage)
             {
                 return new ChangePageRequest() { Page = "menu", Query = SelectedItem.ToString() };
@@ -66,12 +78,17 @@ internal class WelcomePage : Page
             nextX += productWindow.WindowWidth + 2;
         }
 
-        if (!AddMode)
+        if (!AddMode && !SelectMode)
         {
             Console.WriteLine("Tryck A för att kunna lägga till produkt i varukorgen.");
             Console.WriteLine("Tryck C för att gå tillbaka till menyn.");
+            Console.WriteLine("Tryck I för att visa mer information om produkterna.");
         }
-        else
+        else if (SelectMode)
+        {
+            Console.Write("Välj en produkt att få mer information om: ");
+        }
+        else if (AddMode)
         {
             Console.Write("Välj en produkt att lägga till: ");
         }
@@ -79,7 +96,7 @@ internal class WelcomePage : Page
 
     public override void HandleInput()
     {
-        if (AddMode)
+        if (AddMode || SelectMode)
         {
             var key = Console.ReadKey().KeyChar;
             if (int.TryParse(key.ToString(), out var productId))
@@ -97,7 +114,6 @@ internal class WelcomePage : Page
             SelectedItem = Console.ReadKey(true).KeyChar;
             switch (SelectedItem.ToString().ToUpper())
             {
-
                 case "A":
                     AddMode = true;
                     break;
@@ -106,7 +122,7 @@ internal class WelcomePage : Page
                     ShouldChangePage = true;
                     break;
 
-                case "S":
+                case "I":
                     SelectMode = true;
                     break;
 
@@ -115,7 +131,5 @@ internal class WelcomePage : Page
                     break;
             }
         }
-
     }
-
 }
