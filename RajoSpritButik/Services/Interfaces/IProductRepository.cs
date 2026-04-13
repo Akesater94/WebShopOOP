@@ -7,7 +7,7 @@ public interface IProductRepository
     Task<List<Product>> GetShowCaseProducts();
     Task<List<Product>> GetAllProductsByCategoryAsync(int categoryId);
     Task<List<Product>> GetProductsWithDetailsAsync();
-    Task<Product?> GetProductByIdWithDetailsAsync(int id);
+    Task<Product?> GetProductAsync(int id);
     Task UpdateAsync(Product product);
     Task RemoveAsync(Product product);
 }

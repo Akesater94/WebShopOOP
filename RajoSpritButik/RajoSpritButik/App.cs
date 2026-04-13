@@ -126,7 +126,7 @@ internal class App
                         {
                             if (request.Query is int id)
                             {
-                                if (await productService.GetProductByIdWithDetailsAsync(id) is Product product)
+                                if (await productService.GetProductAsync(id) is Product product)
                                 {
                                     await productService.RemoveAsync(product);
                                 }
@@ -134,6 +134,15 @@ internal class App
                             }
                         }
                         break;
+                    case RequestAction.Get:
+                        {
+                            if (request.Query is int id)
+                            {
+                                Product? product = await productService.GetProductAsync(id);
+                                Page = new ProductDetailsPage(product!, request.Redirect);
+                            }
+                            break;
+                        }
                 }
                 break;
             case "user-address":
@@ -220,8 +229,8 @@ internal class App
                             if (User != null)
                             {
                                 shoppingCart = await shoppingCartService.GetByUserIdAsync(User.Id);
+                                await shoppingCartService.AddRowAsync(shoppingCart.Id, productId);
                             }
-                            await shoppingCartService.AddRowAsync(shoppingCart.Id, productId);
                         }
                         break;
                 }
@@ -271,7 +280,7 @@ internal class App
                 {
                     if (request.Query is int id)
                     {
-                        Product? product = await productService.GetProductByIdWithDetailsAsync(id);
+                        Product? product = await productService.GetProductAsync(id);
                         if (product != null)
                         {
                             Page = new UpdateProductPage(product);
