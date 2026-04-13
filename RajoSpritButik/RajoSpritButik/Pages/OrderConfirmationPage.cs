@@ -37,9 +37,9 @@ internal class OrderConfirmationPage : Page
 
             Order.OrderRows.ToList(),
             $"Order: {Order.Id}",
-            $"{"#".PadRight(3)}{"Namn".PadRight(15)}{"Antal".PadRight(5)}{"Styckpris".PadRight(10)}{"Totalpris".PadRight(10)}",
+            $"{"#".PadRight(3)}{"Namn".PadRight(15)}{"Antal".PadRight(7)}{"Styckpris".PadRight(12)}{"Totalpris".PadRight(12)}",
             $"Totalt: {Order.OrderTotal()} kr",
-            (or, i) => $"{(i + 1).ToString().PadRight(3)}{or.Product.Name.PadRight(15)}{or.Quantity.ToString().PadRight(5)}{or.Product.Price.ToString().PadRight(10)}{or.RowTotal.ToString().PadRight(10)}",
+            (or, i) => $"{(i + 1).ToString().PadRight(3)}{or.Product.Name.PadRight(15)}{or.Quantity.ToString().PadRight(7)}{or.Product.Price.ToString().PadRight(12)}{or.RowTotal.ToString().PadRight(12)}",
             X + orderConfirmationWindow.WindowWidth + 2,
             Y
             );
