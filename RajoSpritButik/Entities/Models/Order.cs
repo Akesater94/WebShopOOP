@@ -13,5 +13,10 @@
         public User User { get; set; } = null!;
         public ShippingAlternative ShippingAlternative { get; set; } = null!;
         public ICollection<OrderRow> OrderRows { get; set; } = [];
+
+        public decimal OrderTotal()
+        {
+            return OrderRows.Sum(or => or.RowTotal);
+        }
     }
 }

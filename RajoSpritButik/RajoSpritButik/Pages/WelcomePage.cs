@@ -19,6 +19,7 @@ internal class WelcomePage : Page
         if (AddMode)
         {
             AddMode = false;
+            ShouldChangePage = false;
 
             return new ChangePageRequest() { Page = "shopping-cart-row", Action = RequestAction.Post, Query = SelectedProduct.Id };
         }

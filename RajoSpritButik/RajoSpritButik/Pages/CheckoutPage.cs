@@ -29,6 +29,19 @@ internal class CheckoutPage : Page
             case 7:
                 ShouldChangePage = false;
                 return new ChangePageRequest() { Page = "user-address", Action = RequestAction.Post, Query = SelectedAddress };
+            case 9:
+                return new ChangePageRequest()
+                {
+                    Page = "order",
+                    Action = RequestAction.Post,
+                    Query =
+                    (
+                        AddressId: SelectedAddress.Id,
+                        PaymentAlternativeId: SelectedPaymentAlternative.Id,
+                        ShippingAlternativeId: SelectedShippingAlternative.Id,
+                        ShoppingCartId: ShoppingCart.Id
+                    )
+                };
         }
 
         return null;
@@ -133,7 +146,7 @@ internal class CheckoutPage : Page
                 Step++;
                 break;
             case 9:
-                Console.ReadKey();
+                ShouldChangePage = true;
                 break;
         }
 

@@ -28,6 +28,15 @@ public class ShoppingCartRepository(RajoDbContext context) : IShoppingCartReposi
 
     }
 
+    public async Task EmptyShoppingCartAsync(int shoppingCartId)
+    {
+        await context.ShoppingCartRows
+            .Where(scr => scr.ShoppingCartId == shoppingCartId)
+            .ExecuteDeleteAsync();
+
+        await context.SaveChangesAsync();
+    }
+
     public async Task<ShoppingCart?> GetByUserIdAsync(int id)
     {
         var shoppingCart = await context.ShoppingCarts
@@ -36,6 +45,14 @@ public class ShoppingCartRepository(RajoDbContext context) : IShoppingCartReposi
             .FirstOrDefaultAsync(sc => sc.UserId == id);
 
         return shoppingCart;
+    }
+
+    public async Task<ShoppingCart?> GetShoppingCartAsync(int shoppingCartId)
+    {
+        return await context.ShoppingCarts
+            .Include(sc => sc.ShoppingCartRows)
+            .ThenInclude(scr => scr.Product)
+            .FirstOrDefaultAsync(sc => sc.Id == shoppingCartId);
     }
 
     public async Task RemoveRowAsync(int rowId)
