@@ -7,7 +7,7 @@ internal class CreateProductPage : Page
     private int step = 1;
     public Product Product { get; set; }
 
-    public CreateProductPage(int x, int y, int width, int height) : base(x, y, width, height)
+    public CreateProductPage()
     {
         Product = new Product();
     }

@@ -8,9 +8,9 @@ internal class WelcomePage : Page
 
     public char? SelectedItem = null;
     public bool AddMode { get; set; }
-    public Product SelectedProduct { get; set; }
+    public Product SelectedProduct { get; set; } = null!;
     public bool SelectMode { get; set; }
-    public WelcomePage(List<Product> products, int x, int y, int width, int height) : base(x, y, width, height)
+    public WelcomePage(List<Product> products)
     {
         Products = products;
     }

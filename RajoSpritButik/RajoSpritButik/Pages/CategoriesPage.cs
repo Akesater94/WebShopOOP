@@ -1,5 +1,4 @@
 ﻿using Entities.Models;
-using System.Net.Sockets;
 
 namespace RajoSpritButik.Pages
 {
@@ -8,7 +7,7 @@ namespace RajoSpritButik.Pages
         public List<Category> Categories { get; set; }
         public Category? SelectedCategory { get; set; }
         public char? SelectedItem { get; set; }
-        public CategoriesPage(List<Category> categories, int x, int y, int width, int height) : base(x, y, width, height)
+        public CategoriesPage(List<Category> categories) : base()
         {
             Categories = categories;
         }
@@ -20,7 +19,7 @@ namespace RajoSpritButik.Pages
             }
             else
             {
-                return new ChangePageRequest() { Page = "menu"};
+                return new ChangePageRequest() { Page = "menu" };
             }
         }
 
