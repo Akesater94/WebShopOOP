@@ -10,9 +10,24 @@ public class ShoppingCartService(IShoppingCartRepository shoppingCartRepository)
         await shoppingCartRepository.AddRowAsync(shoppingCartId, productId);
     }
 
+    public async Task EmptyShoppingCartAsync(int shoppingCartId)
+    {
+        ShoppingCart shoppingCart = (await GetShoppingCartAsync(shoppingCartId))!;
+
+        foreach (var shoppingCartRow in shoppingCart.ShoppingCartRows)
+        {
+            await RemoveRowAsync(shoppingCartRow.Id);
+        }
+    }
+
     public async Task<ShoppingCart?> GetByUserIdAsync(int id)
     {
         return await shoppingCartRepository.GetByUserIdAsync(id);
+    }
+
+    public async Task<ShoppingCart?> GetShoppingCartAsync(int shoppingCartId)
+    {
+        return await shoppingCartRepository.GetShoppingCartAsync(shoppingCartId);
     }
 
     public async Task RemoveRowAsync(int rowId)

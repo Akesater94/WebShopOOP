@@ -38,6 +38,15 @@ public class ShoppingCartRepository(RajoDbContext context) : IShoppingCartReposi
         return shoppingCart;
     }
 
+    public async Task<ShoppingCart?> GetShoppingCartAsync(int shoppingCartId)
+    {
+        return await context.ShoppingCarts
+            .Include(sc => sc.ShoppingCartRows)
+            .ThenInclude(scr => scr.Product)
+            .FirstOrDefaultAsync(sc => sc.Id == shoppingCartId);
+            
+    }
+
     public async Task RemoveRowAsync(int rowId)
     {
         var rowToRemove = await context.ShoppingCartRows.FindAsync(rowId);

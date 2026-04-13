@@ -10,6 +10,8 @@ internal class OrderRowConfiguration : IEntityTypeConfiguration<OrderRow>
     {
         builder.HasKey(or => or.Id);
 
+        builder.Property(or => or.Quantity).IsRequired();
+
         builder.HasOne(or => or.Product).WithMany(p => p.OrderRows).HasForeignKey(or => or.ProductId);
         builder.HasOne(or => or.Order).WithMany(o => o.OrderRows).HasForeignKey(or => or.OrderId);
     }
