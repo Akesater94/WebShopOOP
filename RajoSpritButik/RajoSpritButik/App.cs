@@ -83,8 +83,10 @@ internal class App
                 switch (request.Action)
                 {
                     case RequestAction.Get:
-                        List<Category> categories = await categoryService.GetAllCategoriesAsync();
-                        Page = new CategoriesPage(categories);
+                        {
+                            List<Category> categories = await categoryService.GetAllCategoriesAsync();
+                            Page = new CategoriesPage(categories);
+                        }
                         break;
                 }
                 break;
@@ -93,11 +95,40 @@ internal class App
                 switch (request.Action)
                 {
                     case RequestAction.Get:
-                        if (request.Query is int id)
                         {
-                            List<Product> productsByCategory = await productService.GetAllProductsByCategoryAsync(id);
-                            Page = new CategoryPage(productsByCategory);
+                            if (request.Query is int id)
+                            {
+                                List<Product> productsByCategory = await productService.GetAllProductsByCategoryAsync(id);
+                                Page = new CategoryPage(productsByCategory);
+                            }
                         }
+                        break;
+                    case RequestAction.Post:
+                        {
+                            if (request.Query is Category category)
+                            {
+                                await categoryService.AddCategoryAsync(category);
+                                await ChangePage(new ChangePageRequest { Page = "manage-categories" });
+                            }
+                        }
+                        break;
+                    case RequestAction.Patch:
+                        {
+                            if (request.Query is Category category)
+                            {
+                                await categoryService.UpdateCategoryAsync(category);
+                                await ChangePage(new ChangePageRequest { Page = "update-category", Query = category.Id });
+                            }
+                        }
+                        break;
+                    case RequestAction.Delete:
+                        {
+                            if (request.Query is int id)
+                            {
+                                await categoryService.RemoveCategoryAsync(id);
+                            }
+                        }
+                        await ChangePage(new ChangePageRequest { Page = "manage-categories" });
                         break;
                 }
                 break;
@@ -273,8 +304,10 @@ internal class App
                 }
                 break;
             case "manage-products":
-                List<Product> products = await productService.GetProductsWithDetailsAsync();
-                Page = new ManageProductsPage(products);
+                {
+                    List<Product> products = await productService.GetProductsWithDetailsAsync();
+                    Page = new ManageProductsPage(products);
+                }
                 break;
             case "update-product":
                 {
@@ -295,7 +328,31 @@ internal class App
             case "create-product":
                 Page = new CreateProductPage();
                 break;
-
+            case "manage-categories":
+                {
+                    List<Category> categories = await categoryService.GetAllCategoriesAsync();
+                    Page = new ManageCategoriesPage(categories);
+                }
+                break;
+            case "create-category":
+                Page = new CreateCategoryPage();
+                break;
+            case "update-category":
+                {
+                    if (request.Query is int id)
+                    {
+                        Category? category = await categoryService.GetCategoryAsync(id);
+                        if (category != null)
+                        {
+                            Page = new UpdateCategoryPage(category);
+                        }
+                        else
+                        {
+                            await ChangePage(new ChangePageRequest { Page = "manage-categories" });
+                        }
+                    }
+                }
+                break;
             default:
                 Console.WriteLine(request.Page);
                 Console.WriteLine(request.Query);
