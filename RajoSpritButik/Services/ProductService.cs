@@ -40,4 +40,9 @@ public class ProductService(IProductRepository productRepository) : IProductServ
     {
         await productRepository.RemoveAsync(product);
     }
+
+    public async Task<List<Product>> SearchProductsAsync(string searchWord)
+    {
+        return await productRepository.SearchProductsAsync(searchWord);
+    }
 }

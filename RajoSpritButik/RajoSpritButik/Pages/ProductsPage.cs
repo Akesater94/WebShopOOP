@@ -2,7 +2,7 @@
 
 namespace RajoSpritButik.Pages;
 
-internal class CategoryPage : Page
+internal class ProductsPage : Page
 {
     public char? SelectedItem { get; set; }
     public List<Product> Products { get; set; } = [];
@@ -10,7 +10,7 @@ internal class CategoryPage : Page
     public Product SelectedProduct { get; set; } = null!;
     public bool SelectMode { get; set; }
 
-    public CategoryPage(List<Product> products)
+    public ProductsPage(List<Product> products)
     {
         Products = products;
     }
@@ -37,14 +37,7 @@ internal class CategoryPage : Page
         }
         else
         {
-            if (ShouldChangePage)
-            {
-                return new ChangePageRequest() { Page = "categories", Query = SelectedItem.ToString() };
-            }
-            else
-            {
-                return null;
-            }
+            return new ChangePageRequest() { Page = "browse-page" };
         }
     }
 

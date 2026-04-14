@@ -8,6 +8,7 @@ public interface IProductService
     Task<List<Product>> GetAllProductsByCategoryAsync(int categoryId);
     Task<List<Product>> GetProductsWithDetailsAsync();
     Task<Product?> GetProductAsync(int id);
+    Task<List<Product>> SearchProductsAsync(string searchWord);
     Task UpdateAsync(Product product);
     Task RemoveAsync(Product product);
 }
