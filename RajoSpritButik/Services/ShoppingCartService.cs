@@ -30,4 +30,15 @@ public class ShoppingCartService(IShoppingCartRepository shoppingCartRepository)
         await shoppingCartRepository.RemoveRowAsync(rowId);
     }
 
+    public async Task UpdateRowAsync(ShoppingCartRow cartRow)
+    {
+        if (cartRow.Quantity <= 0)
+        {
+            await RemoveRowAsync(cartRow.Id);
+        }
+        else
+        {
+            await shoppingCartRepository.UpdateRowAsync(cartRow);
+        }
+    }
 }

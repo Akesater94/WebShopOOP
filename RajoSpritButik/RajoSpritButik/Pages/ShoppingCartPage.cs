@@ -8,7 +8,9 @@ internal class ShoppingCartPage : Page
     List<ShoppingCartRow> ShoppingCartRows { get; set; } = new();
     public char? SelectedItem { get; set; }
     public ShoppingCartRow SelectedRow { get; set; } = null!;
+    int Step { get; set; }
     public bool deleteMode { get; set; }
+    public bool editMode { get; set; }
     public ShoppingCartPage(ShoppingCart? shoppingCart)
     {
         ShoppingCart = shoppingCart;
@@ -22,6 +24,10 @@ internal class ShoppingCartPage : Page
         if (deleteMode)
         {
             return new ChangePageRequest() { Page = "shopping-cart-row", Action = RequestAction.Delete, Query = SelectedRow.Id };
+        }
+        else if (editMode)
+        {
+            return new ChangePageRequest() { Page = "shopping-cart-row", Action = RequestAction.Patch, Query = SelectedRow };
         }
         switch (SelectedItem)
         {
@@ -53,7 +59,6 @@ internal class ShoppingCartPage : Page
                 string totalProductPrice = (product.Price * row.Quantity).ToString() + "kr";
                 cartItems.Add($"{productIndex.PadRight(3)}{productName.PadRight(15)}{productQuantity.PadRight(15)}{productPrice.PadRight(15)}{totalProductPrice.PadRight(15)}");
             }
-
         }
         else
         {
@@ -63,29 +68,63 @@ internal class ShoppingCartPage : Page
         menuWindow.Draw();
         if (!deleteMode)
         {
-            Console.WriteLine("Tryck D för att kunna välja produkt att ta bort.");
+            Console.WriteLine("Tryck D för att ta bort hela raden eller ändra antal i en produktrad.");
             Console.WriteLine("Tryck C för att gå tillbaka till menyn.");
             Console.WriteLine("Tryck X för att gå till betalning.");
         }
         else
         {
-            Console.Write("Välj en produkt att ta bort: ");
+            switch (Step)
+            {
+                case 1:
+                    Console.WriteLine("Välj en produktrad: ");
+                    break;
+                case 2:
+                    Console.WriteLine("Tryck vänsterpil på tangentbordet för att minska antalet produkter i denna rad med en.");
+                    Console.WriteLine("Tryck högerpil på tangentbordet för att öka antalet produkter i denna rad med en.");
+                    Console.WriteLine("Tryck D för att ta bort hela produktraden.");
+                    Console.WriteLine("Tryck C för att gå tillbaka.");
+                    break;
+            }
         }
     }
-
     public override void HandleInput()
     {
         if (deleteMode)
         {
-            var key = Console.ReadKey().KeyChar;
-            if (int.TryParse(key.ToString(), out var id))
+            switch (Step)
             {
-                id -= 1;
-                if (id < ShoppingCartRows.Count && id >= 0)
-                {
-                    SelectedRow = ShoppingCartRows[id];
-                    ShouldChangePage = true;
-                }
+                case 1:
+                    var key = Console.ReadKey().KeyChar;
+                    if (int.TryParse(key.ToString(), out var id))
+                    {
+                        id -= 1;
+                        if (id < ShoppingCartRows.Count && id >= 0)
+                        {
+                            SelectedRow = ShoppingCartRows[id];
+                            Step++;
+                        }
+                    }
+                    break;
+                case 2:
+                    switch (Console.ReadKey().Key)
+                    {
+                        case ConsoleKey.LeftArrow:
+                            SelectedRow.Quantity--;
+                            break;
+                        case ConsoleKey.RightArrow:
+                            SelectedRow.Quantity++;
+                            break;
+                        case ConsoleKey.D:
+                            ShouldChangePage = true;
+                            break;
+                        case ConsoleKey.C:
+                            deleteMode = false;
+                            editMode = true;
+                            ShouldChangePage = true;
+                            break;
+                    }
+                    break;
             }
         }
         else
@@ -95,6 +134,7 @@ internal class ShoppingCartPage : Page
             {
                 case 'd':
                     deleteMode = true;
+                    Step++;
                     break;
                 case 'c':
                     ShouldChangePage = true;
