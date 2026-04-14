@@ -65,4 +65,10 @@ public class ShoppingCartRepository(RajoDbContext context) : IShoppingCartReposi
             await context.SaveChangesAsync();
         }
     }
+
+    public async Task UpdateRowAsync(ShoppingCartRow cartRow)
+    {
+        context.Update(cartRow);
+        await context.SaveChangesAsync();
+    }
 }

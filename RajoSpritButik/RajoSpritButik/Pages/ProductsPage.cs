@@ -17,10 +17,10 @@ internal class ProductsPage : Page
 
     public override ChangePageRequest? ChangePage()
     {
+        ShouldChangePage = false;
         if (AddMode)
         {
             AddMode = false;
-
             return new ChangePageRequest() { Page = "shopping-cart-row", Action = RequestAction.Post, Query = SelectedProduct.Id };
         }
         else if (SelectMode)

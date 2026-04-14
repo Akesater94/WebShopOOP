@@ -276,7 +276,15 @@ internal class App
                         }
                         Page = new ShoppingCartPage(shoppingCart);
                         break;
-
+                    case RequestAction.Patch:
+                        {
+                            if (request.Query is ShoppingCartRow shoppingCartRow)
+                            {
+                                await shoppingCartService.UpdateRowAsync(shoppingCartRow);
+                            }
+                                await ChangePage(new ChangePageRequest() {Page = "shopping-cart" });
+                        }
+                        break;
                     case RequestAction.Post:
 
                         if (request.Query is int productId)
