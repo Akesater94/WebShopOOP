@@ -19,7 +19,7 @@ namespace RajoSpritButik.Pages
                     case '1':
                         return new ChangePageRequest() { Page = "welcome" };
                     case '2':
-                        return new ChangePageRequest() { Page = "categories" };
+                        return new ChangePageRequest() { Page = "browse-page" };
                     case '3':
                         return new ChangePageRequest() { Page = "shopping-cart" };
                     case '4':

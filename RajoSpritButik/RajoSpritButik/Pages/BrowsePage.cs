@@ -2,23 +2,29 @@
 
 namespace RajoSpritButik.Pages
 {
-    internal class CategoriesPage : Page
+    internal class BrowsePage : Page
     {
         public List<Category> Categories { get; set; }
         public Category? SelectedCategory { get; set; }
-        public char? SelectedItem { get; set; }
-        public CategoriesPage(List<Category> categories) : base()
+        public char SelectedItem { get; set; }
+        public BrowsePage(List<Category> categories) : base()
         {
             Categories = categories;
         }
         public override ChangePageRequest? ChangePage()
         {
-            if (ShouldChangePage && SelectedCategory != null)
+            if (SelectedCategory != null)
             {
+
                 return new ChangePageRequest() { Page = "category", Query = SelectedCategory.Id };
             }
             else
             {
+                if (SelectedItem.ToString().ToUpper() == "F")
+                {
+                    return new ChangePageRequest() { Page = "search" };
+                }
+
                 return new ChangePageRequest() { Page = "menu" };
             }
         }
@@ -34,6 +40,7 @@ namespace RajoSpritButik.Pages
             categoryWindow.Draw();
 
             Console.WriteLine("Tryck en siffra för att välja en kategori.");
+            Console.WriteLine("Tryck F för att söka efter en produkt");
             Console.WriteLine("Tryck C för att gå tillbaka till menyn.");
 
         }
@@ -56,6 +63,9 @@ namespace RajoSpritButik.Pages
                 switch (SelectedItem.ToString().ToUpper())
                 {
                     case "C":
+                        ShouldChangePage = true;
+                        break;
+                    case "F":
                         ShouldChangePage = true;
                         break;
 

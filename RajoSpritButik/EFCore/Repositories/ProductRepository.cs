@@ -45,4 +45,11 @@ public class ProductRepository(RajoDbContext context) : IProductRepository
         context.Remove(product);
         await context.SaveChangesAsync();
     }
+
+    public async Task<List<Product>> SearchProductsAsync(string searchWord)
+    {
+        return await context.Products
+            .Where(p => p.Name.ToLower().Contains(searchWord.ToLower()))
+            .ToListAsync();
+    }
 }

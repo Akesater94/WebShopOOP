@@ -79,18 +79,43 @@ internal class App
                 Page = new MenuPage(User);
                 break;
 
-            case "categories":
+            case "browse-page":
                 switch (request.Action)
                 {
                     case RequestAction.Get:
                         {
                             List<Category> categories = await categoryService.GetAllCategoriesAsync();
-                            Page = new CategoriesPage(categories);
+                            Page = new BrowsePage(categories);
                         }
                         break;
                 }
                 break;
-
+            case "search":
+                switch (request.Action)
+                {
+                    case RequestAction.Get:
+                        {
+                            Page = new SearchPage();
+                        }
+                        break;
+                    case RequestAction.Post:
+                        {
+                            if (request.Query is string searchTerm)
+                            {
+                                if (searchTerm == string.Empty)
+                                {
+                                    await ChangePage(new ChangePageRequest() { Page = "browse-page" });
+                                }
+                                else
+                                {
+                                    List<Product> products = await productService.SearchProductsAsync(searchTerm);
+                                    Page = new ProductsPage(products);
+                                }
+                            }
+                        }
+                        break;
+                }
+                break;
             case "category":
                 switch (request.Action)
                 {
@@ -99,7 +124,7 @@ internal class App
                             if (request.Query is int id)
                             {
                                 List<Product> productsByCategory = await productService.GetAllProductsByCategoryAsync(id);
-                                Page = new CategoryPage(productsByCategory);
+                                Page = new ProductsPage(productsByCategory);
                             }
                         }
                         break;
