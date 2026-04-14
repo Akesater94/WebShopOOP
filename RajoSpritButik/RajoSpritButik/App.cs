@@ -61,7 +61,8 @@ internal class App
         CategoryService categoryService = new CategoryService(new CategoryRepository(context));
         ShoppingCartService shoppingCartService = new ShoppingCartService(new ShoppingCartRepository(context));
         UserAddressService userAddressService = new UserAddressService(new UserAddressRepository(context));
-        UserService userService = new UserService(new UserRepository(context), userAddressService);
+        ContactInfoService contactInfoService = new ContactInfoService(new ContactInfoRepository(context));
+        UserService userService = new UserService(new UserRepository(context), userAddressService, contactInfoService);
         CountryService countryService = new CountryService(new CountryRepository(context));
         AddressService addressService = new AddressService(new AddressRepository(context), countryService);
         ShippingAlternativeService shippingAlternativeService = new ShippingAlternativeService(new ShippingAlternativeRepository(context));
@@ -201,6 +202,31 @@ internal class App
                         }
                 }
                 break;
+
+            case "user":
+                switch (request.Action)
+                {
+                    case RequestAction.Patch:
+                        {
+                            if (request.Query is User user)
+                            {
+                                await userService.UpdateAsync(user);
+                                await ChangePage(new ChangePageRequest { Page = "update-user", Query = user.Id });
+                            }
+                        }
+                        break;
+                    case RequestAction.Delete:
+                        {
+                            if (request.Query is int id)
+                            {
+                                await userService.RemoveUserAsync(id);
+                            }
+                            await ChangePage(new ChangePageRequest { Page = "manage-users" });
+                        }
+                        break;
+                }
+                break;
+
             case "user-address":
                 switch (request.Action)
                 {
@@ -214,6 +240,35 @@ internal class App
                 }
                 break;
 
+            case "user-contact-infos":
+                {
+                    if (request.Query is int id)
+                    {
+                        List<ContactInfo> contactInfos = await userService.GetContactInfosAsync(id);
+                        Page = new UserContactInfosPage(contactInfos, id);
+                    }
+                }
+                break;
+
+            case "user-orders":
+                {
+                    if (request.Query is int id)
+                    {
+                        List<Order> orders = await orderService.GetOrdersByUserIdAsync(id);
+                        Page = new UserOrdersPage(orders, id);
+                    }
+
+                }
+                break;
+            case "user-addresses":
+                {
+                    if (request.Query is int id)
+                    {
+                        List<Address> addresses = await userAddressService.GetAllAddressesAsync(id);
+                        Page = new UserAddressesPage(addresses, id);
+                    }
+                }
+                break;
             case "shopping-cart":
                 switch (request.Action)
                 {
@@ -382,6 +437,44 @@ internal class App
                         else
                         {
                             await ChangePage(new ChangePageRequest { Page = "manage-categories" });
+                        }
+                    }
+                }
+                break;
+            case "manage-users":
+                {
+                    List<User> users = await userService.GetAllUsersAsync();
+                    Page = new ManageUsersPage(users);
+                }
+                break;
+            case "manage-user":
+                {
+                    if (request.Query is int id)
+                    {
+                        User? user = await userService.GetUserAync(id);
+                        if (user != null)
+                        {
+                            Page = new ManageUserPage(user);
+                        }
+                        else
+                        {
+                            await ChangePage(new ChangePageRequest { Page = "manage-users" });
+                        }
+                    }
+                }
+                break;
+            case "update-user":
+                {
+                    if (request.Query is int id)
+                    {
+                        User? user = await userService.GetUserAync(id);
+                        if (user != null)
+                        {
+                            Page = new UpdateUserPage(user);
+                        }
+                        else
+                        {
+                            await ChangePage(new ChangePageRequest { Page = "manage-user", Query = id });
                         }
                     }
                 }
