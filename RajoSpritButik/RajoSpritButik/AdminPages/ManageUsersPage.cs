@@ -39,7 +39,7 @@ internal class ManageUsersPage : Page
     {
         Table<User> productTable = new(
             Users,
-            "Produkter",
+            "Användare",
             $"{"#".PadRight(3)}{"Namn".PadRight(15)}",
             (u, i) => $"{(i + 1).ToString().PadRight(3)}{u.Name.PadRight(15)}",
             X,

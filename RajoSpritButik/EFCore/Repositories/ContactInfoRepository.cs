@@ -10,6 +10,7 @@ public class ContactInfoRepository(RajoDbContext context) : IContactInfoReposito
     {
         return await context.ContactInfos
             .Where(ci => ci.UserId == id)
+            .Include(ci => ci.ContactType)
             .ToListAsync();
     }
 }

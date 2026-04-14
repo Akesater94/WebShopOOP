@@ -25,7 +25,7 @@ internal class UserContactInfosPage : Page
     {
         Table<ContactInfo> contactInfoTable = new(
             ContactInfos,
-            "Kontaktinformationer",
+            "Kontaktinformation",
             $"{"#".PadRight(3)}{"Typ".PadRight(15)}{"Värde".PadRight(15)}",
             (ci, i) => $"{(i + 1).ToString().PadRight(3)}{ci.ContactType.Name.PadRight(15)}{ci.Value.PadRight(15)}",
             X,

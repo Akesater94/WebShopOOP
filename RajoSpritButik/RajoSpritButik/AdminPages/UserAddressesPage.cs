@@ -1,7 +1,7 @@
 ﻿using Entities.Models;
 using RajoSpritButik.UIComponents;
 
-namespace RajoSpritButik;
+namespace RajoSpritButik.AdminPages;
 
 internal class UserAddressesPage : Page
 {
@@ -24,7 +24,7 @@ internal class UserAddressesPage : Page
     {
         Table<Address> addressTable = new(
             Addresses,
-            "Kontaktinformationer",
+            "Addresser",
             $"{"#".PadRight(3)}{"Gatuaddress".PadRight(15)}{"Postnummer".PadRight(15)}{"Stad".PadRight(15)}{"Land".PadRight(15)}",
             (a, i) => $"{(i + 1).ToString().PadRight(3)}{(a.Street + " " + a.StreetNumber).PadRight(15)}{a.ZipCode.PadRight(15)}{a.City.PadRight(15)}{a.Country.Name.PadRight(15)}",
             X,
