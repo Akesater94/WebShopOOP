@@ -1,8 +1,5 @@
 ﻿using Entities.Models;
 using Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Services;
 
@@ -58,5 +55,10 @@ public class OrderService(IOrderRepository orderRepository, IShoppingCartService
 
         await orderRepository.AddOrderRowAsync(orderRow);
         return orderRow;
+    }
+
+    public Task<List<Order>> GetOrdersByUserIdAsync(int userId)
+    {
+        return orderRepository.GetOrdersByUserIdAsync(userId);
     }
 }

@@ -1,9 +1,6 @@
 ﻿using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EFCore.Repositories;
 
@@ -19,6 +16,20 @@ public class OrderRepository(RajoDbContext context) : IOrderRepository
     {
         await context.AddAsync(orderRow);
         await context.SaveChangesAsync();
+    }
+
+    public async Task<List<Order>> GetOrdersByUserIdAsync(int userId)
+    {
+        return await context.Orders
+            .Where(o => o.UserId == userId)
+            .Include(o => o.ShippingAlternative)
+            .Include(o => o.Address)
+            .ThenInclude(a => a.Country)
+            .Include(o => o.PaymentAlternative)
+            .Include(o => o.OrderRows)
+            .ThenInclude(or => or.Product)
+            .Include(o => o.User)
+            .ToListAsync();
     }
 
     public async Task<Order?> GetOrderWithDetailsAsync(int orderId)
