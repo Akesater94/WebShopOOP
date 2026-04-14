@@ -105,7 +105,7 @@ namespace EFCore
             );
 
             modelBuilder.Entity<Address>().HasData(
-                new Address { Id = 1, Street = "Äskebacka", StreetNumber = "125", ZipCode = "451 95", City = "Uddevalla", CountryId = 1},
+                new Address { Id = 1, Street = "Äskebacka", StreetNumber = "125", ZipCode = "451 95", City = "Uddevalla", CountryId = 1 },
                 new Address { Id = 2, Street = "Helenedalsvägen", StreetNumber = "16", ZipCode = "451 45", City = "Uddevalla", CountryId = 1 },
                 new Address { Id = 3, Street = "Kunsgatan", StreetNumber = "22", ZipCode = "451 30", City = "Uddevalla", CountryId = 1 },
                 new Address { Id = 4, Street = "Stenhammarsvägen", StreetNumber = "61", ZipCode = "531 56", City = "Lidköping", CountryId = 1 }
@@ -113,8 +113,8 @@ namespace EFCore
             );
 
             modelBuilder.Entity<Role>().HasData(
-                new Role { Id = 1, Name = "Kund" },
-                new Role { Id = 2, Name = "Administratör" }
+                new Role { Id = 1, Name = "User" },
+                new Role { Id = 2, Name = "Admin" }
             );
 
             modelBuilder.Entity<User>().HasData(
@@ -133,7 +133,7 @@ namespace EFCore
                 );
 
             modelBuilder.Entity<ContactType>().HasData(
-                new ContactType { Id = 1, Name = "Telefonnummer"},
+                new ContactType { Id = 1, Name = "Telefonnummer" },
                 new ContactType { Id = 2, Name = "Epost" }
                 );
 
@@ -167,12 +167,12 @@ namespace EFCore
                 );
 
             modelBuilder.Entity<ShippingAlternative>().HasData(
-                new ShippingAlternative { Id = 1, Name = "DHL", Price = 49.00m},
-                new ShippingAlternative { Id = 2, Name = "PostNord", Price = 89.00m}
+                new ShippingAlternative { Id = 1, Name = "DHL", Price = 49.00m },
+                new ShippingAlternative { Id = 2, Name = "PostNord", Price = 89.00m }
                 );
 
             modelBuilder.Entity<PaymentAlternative>().HasData(
-                new PaymentAlternative { Id = 1, Name = "Faktura", Fee = 29.00m},
+                new PaymentAlternative { Id = 1, Name = "Faktura", Fee = 29.00m },
                 new PaymentAlternative { Id = 2, Name = "Kortbetalning", Fee = 0.00m }
                 );
 
@@ -197,5 +197,5 @@ namespace EFCore
         }
 
     }
-    
+
 }
