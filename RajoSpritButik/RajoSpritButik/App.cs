@@ -337,7 +337,7 @@ internal class App
                             {
                                 await shoppingCartService.UpdateRowAsync(shoppingCartRow);
                             }
-                                await ChangePage(new ChangePageRequest() {Page = "shopping-cart" });
+                            await ChangePage(new ChangePageRequest() { Page = "shopping-cart" });
                         }
                         break;
                     case RequestAction.Post:
@@ -478,6 +478,10 @@ internal class App
                         }
                     }
                 }
+                break;
+
+            case "stats":
+                Page = new StatsMenuPage();
                 break;
             default:
                 Console.WriteLine(request.Page);

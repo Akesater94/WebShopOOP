@@ -1,6 +1,6 @@
 ﻿namespace RajoSpritButik.AdminPages;
 
-internal class AdminMenuPage : Page
+internal class StatsMenuPage : Page
 {
     private ChangePageRequest? request;
     public override ChangePageRequest? ChangePage()
@@ -12,10 +12,7 @@ internal class AdminMenuPage : Page
     {
         List<string> menuContent = new List<string>()
             {
-                "1. Hantera produkter",
-                "2. Hantera kategorier",
-                "3. Hantera användare",
-                "4. Se statistik"
+                "1. Mest sålda produkter"
             };
         Window menuWindow = new Window("Adminmeny", X, Y, menuContent);
         menuWindow.Draw();
@@ -28,24 +25,14 @@ internal class AdminMenuPage : Page
         switch (input)
         {
             case '1':
-                request = new ChangePageRequest() { Page = "manage-products" };
-                break;
-            case '2':
-                request = new ChangePageRequest() { Page = "manage-categories" };
-                break;
-            case '3':
-                request = new ChangePageRequest() { Page = "manage-users" };
-                break;
-            case '4':
-                request = new ChangePageRequest() { Page = "stats" };
+                request = new ChangePageRequest() { Page = "most-sold-products" };
                 break;
             case 'c':
-                request = new ChangePageRequest() { Page = "menu" };
+                request = new ChangePageRequest() { Page = "admin-menu" };
                 break;
             default:
                 ShouldChangePage = false;
                 break;
         }
-
     }
 }
