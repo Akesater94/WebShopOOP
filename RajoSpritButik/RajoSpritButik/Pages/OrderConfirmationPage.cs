@@ -40,9 +40,9 @@ internal class OrderConfirmationPage : Page
             $"Order: {Order.Id}",
             $"{"#".PadRight(3)}{"Namn".PadRight(15)}{"Antal".PadRight(7)}{"Styckpris".PadRight(12)}{"Totalpris".PadRight(12)}{"Moms"}",
             $"Totalt Med Frakt: {(Order.OrderTotal() + Order.ShippingAlternative.Price).ToString("0.00")} kr",
-            (or, i) => $"{(i + 1).ToString().PadRight(3)}{or.Product.Name.PadRight(15)}{or.Quantity.ToString().PadRight(7)}{or.Product.Price.ToString().PadRight(12)}{or.RowTotal.ToString().PadRight(12)}{or.TotalVatAmount.ToString("0.00")}",
+            (or, i) => $"{(i + 1).ToString().PadRight(3)}{(or.Product.Name.Length <= 10 ? or.Product.Name : or.Product.Name.Substring(0,7) + "...").PadRight(15)}{or.Quantity.ToString().PadRight(7)}{or.Product.Price.ToString().PadRight(12)}{or.RowTotal.ToString().PadRight(12)}{or.TotalVatAmount.ToString("0.00")}",
             X + orderConfirmationWindow.WindowWidth + 2,
-            Y 
+            Y
             );
 
         orderRowTable.Draw();
