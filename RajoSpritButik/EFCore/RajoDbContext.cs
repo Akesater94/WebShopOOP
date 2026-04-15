@@ -156,7 +156,8 @@ namespace EFCore
                 new ShoppingCart { Id = 1, Name = "Jimmys kundvagn", UserId = 5 },
                 new ShoppingCart { Id = 2, Name = "Arons kundvagn", UserId = 4 },
                 new ShoppingCart { Id = 3, Name = "Ruhollahs kundvagn", UserId = 3 },
-                new ShoppingCart { Id = 4, Name = "Olles kundvagn", UserId = 2 }
+                new ShoppingCart { Id = 4, Name = "Olles kundvagn", UserId = 2 },
+                new ShoppingCart { Id = 5, Name = "Admins kundvagn", UserId = 1 }
                 );
 
             modelBuilder.Entity<ShoppingCartRow>().HasData(
