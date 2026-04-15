@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Services.DTOs;
 using Services.Interfaces;
 
 namespace Services;
@@ -44,5 +45,10 @@ public class ProductService(IProductRepository productRepository) : IProductServ
     public async Task<List<Product>> SearchProductsAsync(string searchWord)
     {
         return await productRepository.SearchProductsAsync(searchWord);
+    }
+
+    public async Task<List<MostSoldProductDTO>> GetMostSoldProductsAsync(int count = 10)
+    {
+        return await productRepository.GetMostSoldProductsAsync(count);
     }
 }

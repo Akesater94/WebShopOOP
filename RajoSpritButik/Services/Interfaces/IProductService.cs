@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Services.DTOs;
 
 namespace Services.Interfaces;
 
@@ -11,4 +12,5 @@ public interface IProductService
     Task<List<Product>> SearchProductsAsync(string searchWord);
     Task UpdateAsync(Product product);
     Task RemoveAsync(Product product);
+    Task<List<MostSoldProductDTO>> GetMostSoldProductsAsync(int count);
 }

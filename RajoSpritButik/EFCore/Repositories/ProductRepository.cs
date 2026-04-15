@@ -1,5 +1,6 @@
 ﻿using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Services.DTOs;
 using Services.Interfaces;
 
 namespace EFCore.Repositories;
@@ -50,6 +51,20 @@ public class ProductRepository(RajoDbContext context) : IProductRepository
     {
         return await context.Products
             .Where(p => p.Name.ToLower().Contains(searchWord.ToLower()))
+            .ToListAsync();
+    }
+
+    public async Task<List<MostSoldProductDTO>> GetMostSoldProductsAsync(int count = 10)
+    {
+        return await context.Products
+            .Select(p => new MostSoldProductDTO
+            {
+                Name = p.Name,
+                NumberSold = p.OrderRows.Sum(or => or.Quantity)
+            })
+            .Where(p => p.NumberSold > 0)
+            .OrderByDescending(p => p.NumberSold)
+            .Take(count)
             .ToListAsync();
     }
 }
