@@ -12,5 +12,5 @@ public interface IProductRepository
     Task<List<Product>> SearchProductsAsync(string searchWord);
     Task UpdateAsync(Product product);
     Task RemoveAsync(Product product);
-    Task<List<MostSoldProductDTO>> GetMostSoldProductsAsync();
+    Task<List<MostSoldProductDTO>> GetMostSoldProductsAsync(int count);
 }

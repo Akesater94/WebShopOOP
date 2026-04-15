@@ -54,8 +54,17 @@ public class ProductRepository(RajoDbContext context) : IProductRepository
             .ToListAsync();
     }
 
-    public Task<List<MostSoldProductDTO>> GetMostSoldProductsAsync()
+    public async Task<List<MostSoldProductDTO>> GetMostSoldProductsAsync(int count = 10)
     {
-        throw new NotImplementedException();
+        return await context.Products
+            .Select(p => new MostSoldProductDTO
+            {
+                Name = p.Name,
+                NumberSold = p.OrderRows.Sum(or => or.Quantity)
+            })
+            .Where(p => p.NumberSold > 0)
+            .OrderByDescending(p => p.NumberSold)
+            .Take(count)
+            .ToListAsync();
     }
 }

@@ -2,8 +2,10 @@
 using EFCore.Repositories;
 using Entities.Models;
 using RajoSpritButik.AdminPages;
+using RajoSpritButik.AdminPages.StatsPages;
 using RajoSpritButik.Pages;
 using Services;
+using Services.DTOs;
 
 namespace RajoSpritButik;
 
@@ -482,6 +484,10 @@ internal class App
 
             case "stats":
                 Page = new StatsMenuPage();
+                break;
+            case "most-sold-products":
+                List<MostSoldProductDTO> mostSoldProducts = await productService.GetMostSoldProductsAsync(10);
+                Page = new MostSoldProductsPage(mostSoldProducts);
                 break;
             default:
                 Console.WriteLine(request.Page);

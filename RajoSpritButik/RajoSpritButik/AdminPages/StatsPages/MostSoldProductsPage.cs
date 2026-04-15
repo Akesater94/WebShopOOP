@@ -1,13 +1,13 @@
-﻿using Entities.Models;
-using RajoSpritButik.UIComponents;
+﻿using RajoSpritButik.UIComponents;
+using Services.DTOs;
 
 namespace RajoSpritButik.AdminPages.StatsPages;
 
 internal class MostSoldProductsPage : Page
 {
-    public List<Product> Products { get; }
+    public List<MostSoldProductDTO> Products { get; }
     private ChangePageRequest? request;
-    public MostSoldProductsPage(List<Product> products)
+    public MostSoldProductsPage(List<MostSoldProductDTO> products)
     {
         Products = products;
     }
@@ -19,15 +19,15 @@ internal class MostSoldProductsPage : Page
 
     public override void Draw()
     {
-        Table<Product> productTable = new(
+        Table<MostSoldProductDTO> productTable = new(
             Products,
             "Produkter",
-            $"{"#".PadRight(3)}{"Namn".PadRight(30)}{"Kategori".PadRight(15)}{"Saldo".PadRight(15)}{"Pris".PadRight(15)}",
-            (p, i) => $"{(i + 1).ToString().PadRight(3)}{p.Name.PadRight(30)}{p.Category.Name.PadRight(15)}{p.Stock.ToString().PadRight(15)}{p.Price.ToString().PadRight(15)}",
+            $"{"#".PadRight(3)}{"Namn".PadRight(30)}{"Antal sålda".PadRight(15)}",
+            (p, i) => $"{(i + 1).ToString().PadRight(3)}{p.Name.PadRight(30)}{p.NumberSold.ToString().PadRight(15)}",
             X,
             Y
         );
-
+        productTable.Draw();
         Console.WriteLine("Tryck C för att gå tillbaka till menyn.");
 
     }

@@ -47,8 +47,8 @@ public class ProductService(IProductRepository productRepository) : IProductServ
         return await productRepository.SearchProductsAsync(searchWord);
     }
 
-    public async Task<List<MostSoldProductDTO>> GetMostSoldProductsAsync()
+    public async Task<List<MostSoldProductDTO>> GetMostSoldProductsAsync(int count = 10)
     {
-        return await productRepository.GetMostSoldProductsAsync();
+        return await productRepository.GetMostSoldProductsAsync(count);
     }
 }
