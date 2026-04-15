@@ -1,4 +1,5 @@
 ﻿using EFCore;
+using EFCore.APIClients;
 using EFCore.Repositories;
 using Entities.Models;
 using RajoSpritButik.AdminPages;
@@ -9,6 +10,7 @@ namespace RajoSpritButik;
 
 internal class App
 {
+    public Joke Joke { get; set; }
     public Page Page { get; set; } = null!;
     User? User { get; set; }
     bool LoggedIn => User != null;
@@ -19,7 +21,23 @@ internal class App
     {
         await ChangePage(new ChangePageRequest { Page = "menu" });
 
-        Console.BufferHeight = 100;
+        using (HttpClient client = new HttpClient())
+        {
+            using RajoDbContext context = new RajoDbContext();
+            JokeService jokeService = new JokeService(new JokeAPIClient(client), new JokeRepository(context));
+            Joke? newJoke = await jokeService.GetDailyJokeAsync();
+            if (newJoke == null)
+            {
+                Joke = new Joke()
+                {
+                    Value = "Chuck Norris är död och kan inte dra några skämt, varken idag eller imorgon"
+                };
+            }
+            else
+            {
+                Joke = newJoke;
+            }
+        }
 
         while (true)
         {
@@ -47,11 +65,15 @@ internal class App
     public void DrawHeader()
     {
         List<string> listItems = new() { "Rajos Spritbutik", "Kunglig hovleverantör", User?.UserName ?? "" };
-
         string longestItem = listItems.OrderBy(s => s.Length).First();
-
-        Window window = new Window("", (Console.WindowWidth - longestItem.Length) / 2 - 4, 0, listItems);
+        int x = (Console.WindowWidth - longestItem.Length) / 2 - 4;
+        Window window = new Window("", 0, 0, listItems);
         window.Draw();
+
+        List<string> jokeItems = SplitStringIntoLines(Joke.Value, 20);
+        Window jokeWindow = new Window("", 0, 0, jokeItems);
+        jokeWindow.Left = Console.WindowWidth - jokeWindow.WindowWidth;
+        jokeWindow.Draw();
     }
 
     public async Task ChangePage(ChangePageRequest request)
@@ -337,7 +359,7 @@ internal class App
                             {
                                 await shoppingCartService.UpdateRowAsync(shoppingCartRow);
                             }
-                                await ChangePage(new ChangePageRequest() {Page = "shopping-cart" });
+                            await ChangePage(new ChangePageRequest() { Page = "shopping-cart" });
                         }
                         break;
                     case RequestAction.Post:
@@ -485,5 +507,25 @@ internal class App
                 Console.ReadKey();
                 break;
         }
+    }
+    private List<string> SplitStringIntoLines(string value, int maxLength)
+    {
+        var words = value.Split(' ');
+        List<string> lines = new List<string>();
+        string currentLine = "";
+        foreach (string word in words)
+        {
+            if (currentLine.Length + word.Length < maxLength)
+            {
+                currentLine = currentLine + word + " ";
+            }
+            else
+            {
+                lines.Add(currentLine);
+                currentLine = word + " ";
+            }
+        }
+        lines.Add(currentLine);
+        return lines;
     }
 }
