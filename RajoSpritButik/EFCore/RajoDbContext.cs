@@ -21,6 +21,7 @@ namespace EFCore
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<UserAddress> UserAddresses { get; set; } = null!;
         public DbSet<PaymentAlternative> PaymentAlternatives { get; set; } = null!;
+        public DbSet<Joke> Jokes { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
