@@ -44,7 +44,7 @@ internal class ManageCategoriesPage : Page
     {
         Table<Category> categoryTable = new(
             Categories,
-            "Produkter",
+            "Kategorier",
             $"{"#".PadRight(3)}{"Namn".PadRight(15)}",
             (c, i) => $"{(i + 1).ToString().PadRight(3)}{c.Name.PadRight(15)}",
             X,

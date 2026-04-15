@@ -25,7 +25,7 @@ internal class UpdateUserPage : Page
             $"3. Roll: {User.Role.Name} ({User.RoleId})",
             $"4. Kontot skapades: {User.CreatedAt.ToString()}",
         };
-        Window productWindow = new("Vald produkt", X, Y, productFields);
+        Window productWindow = new("Vald användare", X, Y, productFields);
         productWindow.Draw();
 
         switch (selectedField)

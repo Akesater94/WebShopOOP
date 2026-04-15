@@ -30,7 +30,7 @@ internal class UpdateCategoryPage : Page
         {
             $"1. Namn: {Category.Name}",
         };
-        Window productWindow = new("Vald kategory", X, Y, categoryFields);
+        Window productWindow = new("Vald kategori", X, Y, categoryFields);
         productWindow.Draw();
 
         if (selectedField == '0')

@@ -27,7 +27,7 @@ internal class ManageUserPage : Page
                 "4. Se användarens adresser"
 
             };
-        Window menuWindow = new Window("Adminmeny", X, Y, menuContent);
+        Window menuWindow = new Window("Användarmeny", X, Y, menuContent);
         menuWindow.Draw();
     }
 
