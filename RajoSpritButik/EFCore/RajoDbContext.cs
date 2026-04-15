@@ -24,7 +24,10 @@ namespace EFCore
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=RajosDB;Trusted_Connection=True;MultipleActiveResultSets=true;");
+            var customString = Environment.GetEnvironmentVariable("RAJOSDB_CONNECTION");
+            var defaultString = "Server=(localdb)\\mssqllocaldb;Database=RajosDB;Trusted_Connection=True;MultipleActiveResultSets=true;";
+
+            optionsBuilder.UseSqlServer(customString ?? defaultString);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
