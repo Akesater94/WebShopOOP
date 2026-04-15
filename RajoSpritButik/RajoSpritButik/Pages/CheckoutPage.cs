@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using System.Text;
 
 namespace RajoSpritButik.Pages;
 
@@ -29,7 +30,7 @@ internal class CheckoutPage : Page
             case 7:
                 ShouldChangePage = false;
                 return new ChangePageRequest() { Page = "user-address", Action = RequestAction.Post, Query = SelectedAddress };
-            case 9:
+            case 11:
                 return new ChangePageRequest()
                 {
                     Page = "order",
@@ -76,9 +77,16 @@ internal class CheckoutPage : Page
             case 8:
                 ShowPaymentAlternatives();
                 break;
+            case 9:
+                CreditCardInput();
+                break;
+            case 10:
+                CvcInput();
+                break;
         }
     }
 
+   
     public override void HandleInput()
     {
         switch (Step)
@@ -136,16 +144,58 @@ internal class CheckoutPage : Page
                 break;
             case 8:
                 if (int.TryParse(Console.ReadKey().KeyChar.ToString(), out int paymentAlternativeId))
-                {
+                {                    
                     paymentAlternativeId -= 1;
                     if (paymentAlternativeId < PaymentAlternatives.Count && PaymentAlternatives.Count >= 0)
                     {
-                        SelectedPaymentAlternative = PaymentAlternatives[paymentAlternativeId];
+                        if (paymentAlternativeId == 1)
+                        {
+                            SelectedPaymentAlternative = PaymentAlternatives[paymentAlternativeId];
+                            Step++;
+                        }
+                        else
+                        {
+                            SelectedPaymentAlternative = PaymentAlternatives[paymentAlternativeId];
+                            Step = 11;
+                        }                        
                     }
-                }
-                Step++;
+                }                
                 break;
+
             case 9:
+                {
+                    Console.SetCursorPosition(14, 7);                    
+                    int i = 0;
+                    int x = 14;
+                    while (i <= 15)
+                    {
+                        Console.SetCursorPosition(x, 7);
+                        char cvckey = Console.ReadKey().KeyChar;
+                        x++;
+                        i++;
+                    }
+                    Step++;
+                }
+                    break;
+
+            case 10:
+                {
+                    Console.SetCursorPosition(7, 7);
+                    int i = 0;
+                    int x = 7;
+                    while (i <= 2)
+                    {
+                        Console.SetCursorPosition(x, 7);
+                        char cvckey = Console.ReadKey().KeyChar;
+                        x++;
+                        i++;
+                    }
+
+                    Step++;
+                }
+                    break;
+
+            case 11:
                 ShouldChangePage = true;
                 break;
         }
@@ -244,6 +294,24 @@ internal class CheckoutPage : Page
         }
 
         Console.Write("Välj betalningsmetod genom att trycka in en siffra: ");
+    }
+    private void CreditCardInput()
+    {
+        List<string> cards = new List<string>()
+        {
+            "Kortnummer: " + "".PadRight(16)
+        };
+        Window creditNumberWindow = new Window("", X , Y, cards);       
+        creditNumberWindow.Draw();
+    }
+    private void CvcInput()
+    {
+        List<string> cards = new List<string>()
+        {
+            "CVC: " + "".PadRight(4)
+        };
+        Window creditNumberWindow = new Window("", X , Y, cards);
+        creditNumberWindow.Draw();
     }
 }
 
