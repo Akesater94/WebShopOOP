@@ -12,7 +12,7 @@ namespace RajoSpritButik;
 
 internal class App
 {
-    public Joke Joke { get; set; }
+    public Joke Joke { get; set; } = null!;
     public Page Page { get; set; } = null!;
     User? User { get; set; }
     bool LoggedIn => User != null;
@@ -23,23 +23,7 @@ internal class App
     {
         await ChangePage(new ChangePageRequest { Page = "menu" });
 
-        using (HttpClient client = new HttpClient())
-        {
-            using RajoDbContext context = new RajoDbContext();
-            JokeService jokeService = new JokeService(new JokeAPIClient(client), new JokeRepository(context));
-            Joke? newJoke = await jokeService.GetDailyJokeAsync();
-            if (newJoke == null)
-            {
-                Joke = new Joke()
-                {
-                    Value = "Chuck Norris är död och kan inte dra några skämt, varken idag eller imorgon"
-                };
-            }
-            else
-            {
-                Joke = newJoke;
-            }
-        }
+        await InitJoke();
 
         while (true)
         {
@@ -537,5 +521,27 @@ internal class App
         }
         lines.Add(currentLine);
         return lines;
+    }
+    public async Task InitJoke()
+    {
+        using (HttpClient client = new HttpClient())
+        {
+            using RajoDbContext context = new RajoDbContext();
+            client.BaseAddress = new Uri("https://api.chucknorris.io");
+            JokeService jokeService = new JokeService(new JokeAPIClient(client), new JokeRepository(context));
+            Joke? newJoke = await jokeService.GetDailyJokeAsync();
+            if (newJoke == null)
+            {
+                Joke = new Joke()
+                {
+                    Value = "Chuck Norris är död och kan inte dra några skämt, varken idag eller imorgon"
+                };
+            }
+            else
+            {
+                Joke = newJoke;
+            }
+        }
+
     }
 }
